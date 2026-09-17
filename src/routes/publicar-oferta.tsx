@@ -1,0 +1,303 @@
+import * as React from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { ArrowLeft } from "lucide-react";
+import { toast } from "sonner";
+import { z } from "zod";
+import {
+  CITIES,
+  CONTRACT_TYPES,
+  SPECIALTIES,
+  type ContractType,
+  type Specialty,
+} from "@/lib/barber-data";
+import { useBarbers } from "@/lib/barber-store";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+export const Route = createFileRoute("/publicar-oferta")({
+  head: () => ({
+    meta: [
+      { title: "Publicar búsqueda de barbero — BarberMatch" },
+      {
+        name: "description",
+        content:
+          "Publica el anuncio de tu barbería: a quién buscas, especialidades requeridas, ciudad, contrato y condiciones ofrecidas.",
+      },
+      { property: "og:title", content: "Publicar búsqueda de barbero — BarberMatch" },
+      {
+        property: "og:description",
+        content: "Llega a barberos con portfolio publicado en tu ciudad.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
+  component: PublishOffer,
+});
+
+const schema = z.object({
+  shopName: z.string().trim().min(2, "Indica el nombre de la barbería").max(80),
+  lookingFor: z.string().trim().min(5, "Describe a quién buscas").max(120),
+  description: z.string().trim().min(20, "Cuenta algo más de la vacante").max(800),
+  email: z.string().trim().email("Email no válido").max(255),
+  whatsapp: z.string().trim().regex(/^\d{9,15}$/, "Solo números, con prefijo del país"),
+  salaryMin: z.number().min(0).max(9000),
+  salaryMax: z.number().min(0).max(9000),
+});
+
+const DEFAULT_COVER =
+  "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=900&q=80";
+const DEFAULT_LOGO =
+  "https://images.unsplash.com/photo-1521490683712-35a1cb61fa6d?auto=format&fit=crop&w=300&q=80";
+
+function PublishOffer() {
+  const { addOffer } = useBarbers();
+  const navigate = useNavigate();
+  const [form, setForm] = React.useState({
+    shopName: "",
+    lookingFor: "",
+    description: "",
+    email: "",
+    whatsapp: "",
+    city: CITIES[0] as string,
+    contractType: CONTRACT_TYPES[0] as ContractType,
+    salaryMin: "1400",
+    salaryMax: "2000",
+    conditions: "",
+  });
+  const [specialties, setSpecialties] = React.useState<Specialty[]>([SPECIALTIES[0]]);
+  const [errors, setErrors] = React.useState<Record<string, string>>({});
+
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const parsed = schema.safeParse({
+      ...form,
+      salaryMin: Number(form.salaryMin) || 0,
+      salaryMax: Number(form.salaryMax) || 0,
+    });
+    if (!parsed.success) {
+      const next: Record<string, string> = {};
+      for (const issue of parsed.error.issues) next[String(issue.path[0])] = issue.message;
+      setErrors(next);
+      return;
+    }
+    if (specialties.length === 0) {
+      setErrors({ specialties: "Elige al menos una especialidad" });
+      return;
+    }
+    setErrors({});
+    addOffer({
+      id: `offer-${Date.now().toString(36)}`,
+      shopName: parsed.data.shopName,
+      city: form.city,
+      logo: DEFAULT_LOGO,
+      cover: DEFAULT_COVER,
+      lookingFor: parsed.data.lookingFor,
+      specialties,
+      contractType: form.contractType,
+      salaryMin: parsed.data.salaryMin,
+      salaryMax: parsed.data.salaryMax,
+      conditions: form.conditions
+        .split("\n")
+        .map((c) => c.trim())
+        .filter(Boolean)
+        .slice(0, 6),
+      description: parsed.data.description,
+      email: parsed.data.email,
+      whatsapp: parsed.data.whatsapp,
+    });
+    toast.success("Anuncio publicado", {
+      description: "Ya aparece en el muro de barberías.",
+    });
+    navigate({ to: "/" });
+  };
+
+  const set = (key: keyof typeof form) => (value: string) =>
+    setForm((f) => ({ ...f, [key]: value }));
+
+  return (
+    <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
+      <Button asChild size="sm" variant="ghost" className="-ml-2 mb-2 text-muted-foreground">
+        <Link to="/">
+          <ArrowLeft className="h-4 w-4" /> Volver al muro
+        </Link>
+      </Button>
+      <h1 className="font-display text-3xl font-semibold uppercase">
+        Publicar búsqueda de barbero
+      </h1>
+      <p className="mt-1 text-sm text-muted-foreground">
+        Rellena la vacante y aparecerá al instante en el muro de barberías.
+      </p>
+
+      <form onSubmit={submit} className="mt-6 space-y-5" noValidate>
+        <div className="grid gap-4 rounded-xl border border-border/70 bg-card p-4 sm:grid-cols-2">
+          <Field label="Nombre de la barbería" error={errors["shopName"]}>
+            <Input
+              value={form.shopName}
+              maxLength={80}
+              onChange={(e) => set("shopName")(e.target.value)}
+            />
+          </Field>
+          <Field label="Ciudad">
+            <Select value={form.city} onValueChange={set("city")}>
+              <SelectTrigger className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {CITIES.map((c) => (
+                  <SelectItem key={c} value={c}>
+                    {c}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </Field>
+          <div className="sm:col-span-2">
+            <Field label="¿A quién buscáis?" error={errors["lookingFor"]}>
+              <Input
+                placeholder="Ej. Barbero senior con dominio del degradado"
+                value={form.lookingFor}
+                maxLength={120}
+                onChange={(e) => set("lookingFor")(e.target.value)}
+              />
+            </Field>
+          </div>
+          <div className="sm:col-span-2">
+            <Field label="Especialidades requeridas" error={errors["specialties"]}>
+              <div className="flex flex-wrap gap-2">
+                {SPECIALTIES.map((s) => {
+                  const on = specialties.includes(s);
+                  return (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() =>
+                        setSpecialties((prev) =>
+                          prev.includes(s) ? prev.filter((v) => v !== s) : [...prev, s],
+                        )
+                      }
+                      className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+                        on
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-border text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      {s}
+                    </button>
+                  );
+                })}
+              </div>
+            </Field>
+          </div>
+        </div>
+
+        <div className="grid gap-4 rounded-xl border border-border/70 bg-card p-4 sm:grid-cols-3">
+          <Field label="Tipo de contrato">
+            <Select
+              value={form.contractType}
+              onValueChange={(v) => setForm((f) => ({ ...f, contractType: v as ContractType }))}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {CONTRACT_TYPES.map((c) => (
+                  <SelectItem key={c} value={c}>
+                    {c}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </Field>
+          <Field label="Desde (€/mes)" error={errors["salaryMin"]}>
+            <Input
+              type="number"
+              min={0}
+              max={9000}
+              value={form.salaryMin}
+              onChange={(e) => set("salaryMin")(e.target.value)}
+            />
+          </Field>
+          <Field label="Hasta (€/mes)" error={errors["salaryMax"]}>
+            <Input
+              type="number"
+              min={0}
+              max={9000}
+              value={form.salaryMax}
+              onChange={(e) => set("salaryMax")(e.target.value)}
+            />
+          </Field>
+        </div>
+
+        <div className="space-y-4 rounded-xl border border-border/70 bg-card p-4">
+          <Field label="Descripción de la vacante" error={errors["description"]}>
+            <Textarea
+              rows={4}
+              maxLength={800}
+              value={form.description}
+              onChange={(e) => set("description")(e.target.value)}
+            />
+          </Field>
+          <Field label="Condiciones ofrecidas (una por línea)">
+            <Textarea
+              rows={4}
+              maxLength={500}
+              placeholder={"Fijo + comisión\n2 días libres seguidos\nFormación pagada"}
+              value={form.conditions}
+              onChange={(e) => set("conditions")(e.target.value)}
+            />
+          </Field>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field label="Email de contacto" error={errors["email"]}>
+              <Input
+                type="email"
+                value={form.email}
+                maxLength={255}
+                onChange={(e) => set("email")(e.target.value)}
+              />
+            </Field>
+            <Field label="WhatsApp (con prefijo, solo números)" error={errors["whatsapp"]}>
+              <Input
+                value={form.whatsapp}
+                maxLength={15}
+                onChange={(e) => set("whatsapp")(e.target.value.replace(/\D/g, ""))}
+              />
+            </Field>
+          </div>
+        </div>
+
+        <Button type="submit" className="w-full font-semibold sm:w-auto">
+          Publicar anuncio
+        </Button>
+      </form>
+    </div>
+  );
+}
+
+function Field({
+  label,
+  error,
+  children,
+}: {
+  label: string;
+  error?: string | undefined;
+  children: React.ReactNode;
+}) {
+  return (
+    <label className="block min-w-0">
+      <span className="mb-1.5 block text-xs uppercase tracking-wider text-muted-foreground">
+        {label}
+      </span>
+      {children}
+      {error && <span className="mt-1 block text-xs text-destructive">{error}</span>}
+    </label>
+  );
+}

@@ -10,33 +10,63 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PanelRouteImport } from './routes/panel'
+import { Route as PublicarOfertaRouteImport } from './routes/publicar-oferta'
+import { Route as BarberosBarberIdRouteImport } from './routes/barberos.$barberId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PanelRoute = PanelRouteImport.update({
+  id: '/panel',
+  path: '/panel',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PublicarOfertaRoute = PublicarOfertaRouteImport.update({
+  id: '/publicar-oferta',
+  path: '/publicar-oferta',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BarberosBarberIdRoute = BarberosBarberIdRouteImport.update({
+  id: '/barberos/$barberId',
+  path: '/barberos/$barberId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/panel': typeof PanelRoute
+  '/publicar-oferta': typeof PublicarOfertaRoute
+  '/barberos/$barberId': typeof BarberosBarberIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/panel': typeof PanelRoute
+  '/publicar-oferta': typeof PublicarOfertaRoute
+  '/barberos/$barberId': typeof BarberosBarberIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/panel': typeof PanelRoute
+  '/publicar-oferta': typeof PublicarOfertaRoute
+  '/barberos/$barberId': typeof BarberosBarberIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/panel' | '/publicar-oferta' | '/barberos/$barberId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/panel' | '/publicar-oferta' | '/barberos/$barberId'
+  id: '__root__' | '/' | '/panel' | '/publicar-oferta' | '/barberos/$barberId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  PanelRoute: typeof PanelRoute
+  PublicarOfertaRoute: typeof PublicarOfertaRoute
+  BarberosBarberIdRoute: typeof BarberosBarberIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +78,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/panel': {
+      id: '/panel'
+      path: '/panel'
+      fullPath: '/panel'
+      preLoaderRoute: typeof PanelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publicar-oferta': {
+      id: '/publicar-oferta'
+      path: '/publicar-oferta'
+      fullPath: '/publicar-oferta'
+      preLoaderRoute: typeof PublicarOfertaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/barberos/$barberId': {
+      id: '/barberos/$barberId'
+      path: '/barberos/$barberId'
+      fullPath: '/barberos/$barberId'
+      preLoaderRoute: typeof BarberosBarberIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  PanelRoute: PanelRoute,
+  PublicarOfertaRoute: PublicarOfertaRoute,
+  BarberosBarberIdRoute: BarberosBarberIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
