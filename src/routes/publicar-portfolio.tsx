@@ -44,7 +44,7 @@ export const Route = createFileRoute("/publicar-portfolio")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: PublishPortfolio;
+  component: PublishPortfolio,
 });
 
 const schema = z.object({
