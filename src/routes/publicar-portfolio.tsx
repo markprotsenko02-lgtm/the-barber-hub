@@ -99,16 +99,16 @@ function PublishPortfolio() {
     bio: "",
     city: CITIES[0] as string,
     availability: AVAILABILITIES[0] as Availability,
-    experienceYears: "5",
-    salaryMin: "1500",
-    salaryMax: "2200",
+    experienceYears: "",
+    salaryMin: "",
+    salaryMax: "",
     email: "",
     whatsapp: "",
     instagram: "",
     education: "",
   });
-  const [specialties, setSpecialties] = React.useState<Specialty[]>([SPECIALTIES[0]]);
-  const [contracts, setContracts] = React.useState<ContractType[]>([CONTRACT_TYPES[0]]);
+  const [specialties, setSpecialties] = React.useState<Specialty[]>([]);
+  const [contracts, setContracts] = React.useState<ContractType[]>([]);
   const [gallery, setGallery] = React.useState<GalleryItem[]>([]);
   const [media, setMedia] = React.useState({
     type: "image" as "image" | "video",
@@ -224,7 +224,12 @@ function PublishPortfolio() {
       <form onSubmit={submit} className="mt-8 space-y-5" noValidate>
         <div className="grid gap-4 rounded-xl border border-border/70 bg-card p-4 sm:grid-cols-2">
           <Field label="Nombre y apellido" error={errors["name"]}>
-            <Input value={form.name} maxLength={80} onChange={(e) => set("name")(e.target.value)} />
+            <Input
+              placeholder="Ej: Carlos Méndez"
+              value={form.name}
+              maxLength={80}
+              onChange={(e) => set("name")(e.target.value)}
+            />
           </Field>
           <Field label="Ciudad">
             <Select value={form.city} onValueChange={set("city")}>
@@ -243,7 +248,7 @@ function PublishPortfolio() {
           <div className="sm:col-span-2">
             <Field label="Titular profesional" error={errors["headline"]}>
               <Input
-                placeholder="Ej. Especialista en fade y barba clásica"
+                placeholder="Ej: Especialista en fade y arreglo de barba"
                 value={form.headline}
                 maxLength={120}
                 onChange={(e) => set("headline")(e.target.value)}
@@ -255,6 +260,7 @@ function PublishPortfolio() {
               type="number"
               min={0}
               max={60}
+              placeholder="Ej: 5 años"
               value={form.experienceYears}
               onChange={(e) => set("experienceYears")(e.target.value)}
             />
@@ -309,6 +315,7 @@ function PublishPortfolio() {
               type="number"
               min={0}
               max={9000}
+              placeholder="Ej: 1500"
               value={form.salaryMin}
               onChange={(e) => set("salaryMin")(e.target.value)}
             />
@@ -318,6 +325,7 @@ function PublishPortfolio() {
               type="number"
               min={0}
               max={9000}
+              placeholder="Ej: 2200"
               value={form.salaryMax}
               onChange={(e) => set("salaryMax")(e.target.value)}
             />
@@ -329,6 +337,7 @@ function PublishPortfolio() {
             <Textarea
               rows={4}
               maxLength={800}
+              placeholder="Ej: Barbero con 5 años de experiencia en fade, barba y diseño freestyle. Busco jornada completa en Valencia."
               value={form.bio}
               onChange={(e) => set("bio")(e.target.value)}
             />
@@ -346,6 +355,7 @@ function PublishPortfolio() {
             <Field label="Email de contacto" error={errors["email"]}>
               <Input
                 type="email"
+                placeholder="Ej: carlos@email.com"
                 value={form.email}
                 maxLength={255}
                 onChange={(e) => set("email")(e.target.value)}
@@ -353,6 +363,7 @@ function PublishPortfolio() {
             </Field>
             <Field label="WhatsApp (prefijo + número)" error={errors["whatsapp"]}>
               <Input
+                placeholder="Ej: 34600123456"
                 value={form.whatsapp}
                 maxLength={15}
                 onChange={(e) => set("whatsapp")(e.target.value.replace(/\D/g, ""))}
