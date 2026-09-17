@@ -51,9 +51,9 @@ const schema = z.object({
   name: z.string().trim().min(2, "Indica tu nombre").max(80),
   headline: z.string().trim().min(5, "Escribe un titular corto").max(120),
   bio: z.string().trim().min(20, "Cuéntanos algo más sobre ti").max(800),
-  experienceYears: z.number().min(0, "Años no válidos").max(60),
-  salaryMin: z.number().min(0).max(9000),
-  salaryMax: z.number().min(0).max(9000),
+  experienceYears: z.number().min(1, "Indica tus años de experiencia").max(60),
+  salaryMin: z.number().min(1, "Indica tu salario esperado").max(9000),
+  salaryMax: z.number().min(1, "Indica tu salario esperado").max(9000),
   email: z.string().trim().email("Email no válido").max(255),
   whatsapp: z.string().trim().regex(/^\d{9,15}$/, "Solo números, con prefijo del país"),
 });

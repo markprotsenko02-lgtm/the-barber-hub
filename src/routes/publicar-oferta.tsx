@@ -50,8 +50,8 @@ const schema = z.object({
   description: z.string().trim().min(20, "Cuenta algo más de la vacante").max(800),
   email: z.string().trim().email("Email no válido").max(255),
   whatsapp: z.string().trim().regex(/^\d{9,15}$/, "Solo números, con prefijo del país"),
-  salaryMin: z.number().min(0).max(9000),
-  salaryMax: z.number().min(0).max(9000),
+  salaryMin: z.number().min(1, "Indica el salario ofrecido").max(9000),
+  salaryMax: z.number().min(1, "Indica el salario ofrecido").max(9000),
 });
 
 const DEFAULT_COVER =
@@ -98,11 +98,11 @@ function PublishOffer() {
     whatsapp: "",
     city: CITIES[0] as string,
     contractType: CONTRACT_TYPES[0] as ContractType,
-    salaryMin: "1400",
-    salaryMax: "2000",
+    salaryMin: "",
+    salaryMax: "",
     conditions: "",
   });
-  const [specialties, setSpecialties] = React.useState<Specialty[]>([SPECIALTIES[0]]);
+  const [specialties, setSpecialties] = React.useState<Specialty[]>([]);
   const [errors, setErrors] = React.useState<Record<string, string>>({});
 
   const submit = (e: React.FormEvent) => {
@@ -178,6 +178,7 @@ function PublishOffer() {
         <div className="grid gap-4 rounded-xl border border-border/70 bg-card p-4 sm:grid-cols-2">
           <Field label="Nombre de la barbería" error={errors["shopName"]}>
             <Input
+              placeholder="Ej: Barbería La Navaja"
               value={form.shopName}
               maxLength={80}
               onChange={(e) => set("shopName")(e.target.value)}
@@ -200,7 +201,7 @@ function PublishOffer() {
           <div className="sm:col-span-2">
             <Field label="¿A quién buscáis?" error={errors["lookingFor"]}>
               <Input
-                placeholder="Ej. Barbero senior con dominio del degradado"
+                placeholder="Ej: Barbero senior con dominio del fade y la barba"
                 value={form.lookingFor}
                 maxLength={120}
                 onChange={(e) => set("lookingFor")(e.target.value)}
@@ -259,6 +260,7 @@ function PublishOffer() {
               type="number"
               min={0}
               max={9000}
+              placeholder="Ej: 1400"
               value={form.salaryMin}
               onChange={(e) => set("salaryMin")(e.target.value)}
             />
@@ -268,6 +270,7 @@ function PublishOffer() {
               type="number"
               min={0}
               max={9000}
+              placeholder="Ej: 2000"
               value={form.salaryMax}
               onChange={(e) => set("salaryMax")(e.target.value)}
             />
@@ -279,6 +282,7 @@ function PublishOffer() {
             <Textarea
               rows={4}
               maxLength={800}
+              placeholder="Ej: Buscamos barbero con experiencia en fade y arreglo de barba para incorporación inmediata. Clientela joven y ambiente de equipo."
               value={form.description}
               onChange={(e) => set("description")(e.target.value)}
             />
@@ -296,6 +300,7 @@ function PublishOffer() {
             <Field label="Email de contacto" error={errors["email"]}>
               <Input
                 type="email"
+                placeholder="Ej: contacto@barberia.com"
                 value={form.email}
                 maxLength={255}
                 onChange={(e) => set("email")(e.target.value)}
@@ -303,6 +308,7 @@ function PublishOffer() {
             </Field>
             <Field label="WhatsApp (con prefijo, solo números)" error={errors["whatsapp"]}>
               <Input
+                placeholder="Ej: 34600123456"
                 value={form.whatsapp}
                 maxLength={15}
                 onChange={(e) => set("whatsapp")(e.target.value.replace(/\D/g, ""))}
