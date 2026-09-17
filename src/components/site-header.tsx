@@ -1,10 +1,10 @@
 import { Link } from "@tanstack/react-router";
-import { Scissors } from "lucide-react";
+import { Scissors, Store } from "lucide-react";
 
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-border/70 bg-background/85 backdrop-blur-md">
-      <div className="mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-4 py-3 sm:px-6">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
         <Link to="/" className="flex min-w-0 items-center gap-2">
           <span className="grid h-9 w-9 shrink-0 place-items-center rounded-md bg-primary text-primary-foreground">
             <Scissors className="h-5 w-5" />
@@ -18,20 +18,24 @@ export function SiteHeader() {
             </span>
           </span>
         </Link>
-        <nav className="flex shrink-0 items-center gap-1 text-sm font-medium sm:gap-4">
+        <nav className="flex shrink-0 items-center gap-2">
           <Link
-            to="/"
-            className="rounded-md px-2 py-1.5 text-muted-foreground transition-colors hover:text-foreground"
-            activeProps={{ className: "text-foreground" }}
-            activeOptions={{ exact: true }}
+            to="/publicar-portfolio"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-2.5 py-2 font-display text-[11px] font-semibold uppercase tracking-wider text-primary-foreground shadow-sm transition-opacity hover:opacity-90 sm:px-4 sm:text-xs"
           >
-            Directorio
+            <Scissors className="h-4 w-4 shrink-0" />
+            <span className="whitespace-nowrap">
+              Soy Barbero <span className="hidden sm:inline">• Publicar Portfolio</span>
+            </span>
           </Link>
           <Link
-            to="/panel"
-            className="rounded-md bg-primary px-3 py-1.5 font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+            to="/publicar-oferta"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-primary/60 bg-background/60 px-2.5 py-2 font-display text-[11px] font-semibold uppercase tracking-wider text-primary transition-colors hover:bg-primary/10 sm:px-4 sm:text-xs"
           >
-            Panel barbero
+            <Store className="h-4 w-4 shrink-0" />
+            <span className="whitespace-nowrap">
+              Soy Barbería <span className="hidden sm:inline">• Buscar Barbero</span>
+            </span>
           </Link>
         </nav>
       </div>

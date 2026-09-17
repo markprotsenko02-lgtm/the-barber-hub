@@ -11,6 +11,7 @@ import {
   type Specialty,
 } from "@/lib/barber-data";
 import { useBarbers } from "@/lib/barber-store";
+import { TipsPanel } from "@/components/tips-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -57,6 +58,34 @@ const DEFAULT_COVER =
   "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=900&q=80";
 const DEFAULT_LOGO =
   "https://images.unsplash.com/photo-1521490683712-35a1cb61fa6d?auto=format&fit=crop&w=300&q=80";
+
+const OFFER_TIPS = [
+  {
+    title: "Define el perfil que necesitas",
+    text: "Concreta si buscas barbero senior, junior o mixto, y qué técnicas debe dominar en el día a día.",
+  },
+  {
+    title: "Especialidades requeridas",
+    text: "Marca las técnicas imprescindibles (fade, barba, tijera, color) para filtrar candidaturas.",
+  },
+  {
+    title: "Modalidad y contrato",
+    text: "Indica si es contrato por jornada, autónomo, porcentaje de comisión o alquiler de sillón.",
+  },
+  {
+    title: "Nivel de experiencia",
+    text: "Di los años mínimos que pides y si aceptas perfiles recién salidos de academia.",
+  },
+  {
+    title: "Ambiente de la barbería",
+    text: "Cuenta el tipo de clientela, el estilo del local y cómo se trabaja en equipo.",
+  },
+  {
+    title: "Condiciones ofrecidas",
+    text: "Fijo, comisiones, días libres, formación pagada y horarios: cuanto más claro, mejores respuestas.",
+  },
+];
+
 
 function PublishOffer() {
   const { addOffer } = useBarbers();
@@ -137,7 +166,15 @@ function PublishOffer() {
         Rellena la vacante y aparecerá al instante en el muro de barberías.
       </p>
 
-      <form onSubmit={submit} className="mt-6 space-y-5" noValidate>
+      <div className="mt-6">
+        <TipsPanel
+          title="Recomendaciones para publicar tu oferta"
+          intro="Las ofertas con condiciones claras reciben respuestas de barberos que sí encajan."
+          tips={OFFER_TIPS}
+        />
+      </div>
+
+      <form onSubmit={submit} className="mt-8 space-y-5" noValidate>
         <div className="grid gap-4 rounded-xl border border-border/70 bg-card p-4 sm:grid-cols-2">
           <Field label="Nombre de la barbería" error={errors["shopName"]}>
             <Input
