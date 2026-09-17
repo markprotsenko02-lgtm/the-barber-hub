@@ -1,12 +1,11 @@
 # BarberMatch — roadmap
 
-- [x] Datos de prueba de barberos (perfiles, formación, galería, condiciones)
+- [x] Datos de prueba de barberos y de anuncios de barberías
 - [x] Tema visual oscuro premium con acentos dorados
-- [x] Tarjeta de barbero + galería con lightbox
-- [ ] Home con selector principal: Barberos / Barberías
-- [ ] Muro de barberos con filtros y botón "Publicar mi portfolio"
-- [ ] Muro de anuncios de barberías + botón "Publicar búsqueda de barbero"
-- [ ] Perfil público del barbero con contacto (WhatsApp / email / formulario)
-- [ ] Panel del barbero (editar perfil, formación, condiciones, subir fotos/vídeos)
-- [ ] Formulario de publicación de oferta de barbería
-- [ ] Metadatos SEO por ruta
+- [x] Home con selector principal: Barberos / Barberías
+- [x] Muro de barberos con filtros y botón "Publicar mi portfolio"
+- [x] Muro de anuncios de barberías + botón "Publicar búsqueda de barbero"
+- [x] Perfil público del barbero con galería lightbox y contacto
+- [x] Panel del barbero (perfil, formación, condiciones, fotos/vídeos)
+- [x] Formulario de publicación de oferta de barbería
+- [x] Metadatos SEO por ruta
