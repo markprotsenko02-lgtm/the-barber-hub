@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PanelRouteImport } from './routes/panel'
 import { Route as PublicarOfertaRouteImport } from './routes/publicar-oferta'
+import { Route as PublicarPortfolioRouteImport } from './routes/publicar-portfolio'
 import { Route as BarberosBarberIdRouteImport } from './routes/barberos.$barberId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -29,6 +30,11 @@ const PublicarOfertaRoute = PublicarOfertaRouteImport.update({
   path: '/publicar-oferta',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PublicarPortfolioRoute = PublicarPortfolioRouteImport.update({
+  id: '/publicar-portfolio',
+  path: '/publicar-portfolio',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BarberosBarberIdRoute = BarberosBarberIdRouteImport.update({
   id: '/barberos/$barberId',
   path: '/barberos/$barberId',
@@ -39,12 +45,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/panel': typeof PanelRoute
   '/publicar-oferta': typeof PublicarOfertaRoute
+  '/publicar-portfolio': typeof PublicarPortfolioRoute
   '/barberos/$barberId': typeof BarberosBarberIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/panel': typeof PanelRoute
   '/publicar-oferta': typeof PublicarOfertaRoute
+  '/publicar-portfolio': typeof PublicarPortfolioRoute
   '/barberos/$barberId': typeof BarberosBarberIdRoute
 }
 export interface FileRoutesById {
@@ -52,20 +60,38 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/panel': typeof PanelRoute
   '/publicar-oferta': typeof PublicarOfertaRoute
+  '/publicar-portfolio': typeof PublicarPortfolioRoute
   '/barberos/$barberId': typeof BarberosBarberIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/panel' | '/publicar-oferta' | '/barberos/$barberId'
+  fullPaths:
+    | '/'
+    | '/panel'
+    | '/publicar-oferta'
+    | '/publicar-portfolio'
+    | '/barberos/$barberId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/panel' | '/publicar-oferta' | '/barberos/$barberId'
-  id: '__root__' | '/' | '/panel' | '/publicar-oferta' | '/barberos/$barberId'
+  to:
+    | '/'
+    | '/panel'
+    | '/publicar-oferta'
+    | '/publicar-portfolio'
+    | '/barberos/$barberId'
+  id:
+    | '__root__'
+    | '/'
+    | '/panel'
+    | '/publicar-oferta'
+    | '/publicar-portfolio'
+    | '/barberos/$barberId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   PanelRoute: typeof PanelRoute
   PublicarOfertaRoute: typeof PublicarOfertaRoute
+  PublicarPortfolioRoute: typeof PublicarPortfolioRoute
   BarberosBarberIdRoute: typeof BarberosBarberIdRoute
 }
 
@@ -92,6 +118,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicarOfertaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/publicar-portfolio': {
+      id: '/publicar-portfolio'
+      path: '/publicar-portfolio'
+      fullPath: '/publicar-portfolio'
+      preLoaderRoute: typeof PublicarPortfolioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/barberos/$barberId': {
       id: '/barberos/$barberId'
       path: '/barberos/$barberId'
@@ -106,6 +139,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   PanelRoute: PanelRoute,
   PublicarOfertaRoute: PublicarOfertaRoute,
+  PublicarPortfolioRoute: PublicarPortfolioRoute,
   BarberosBarberIdRoute: BarberosBarberIdRoute,
 }
 export const routeTree = rootRouteImport
