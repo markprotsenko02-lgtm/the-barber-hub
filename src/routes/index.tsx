@@ -154,7 +154,7 @@ function BarbersWall({ barbers }: { barbers: ReturnType<typeof useBarbers>["barb
           </p>
         </div>
         <Button asChild className="shrink-0 font-semibold">
-          <Link to="/panel">Publicar mi portfolio</Link>
+          <Link to="/publicar-portfolio">Publicar mi portfolio</Link>
         </Button>
       </div>
 
