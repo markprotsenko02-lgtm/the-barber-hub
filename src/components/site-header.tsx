@@ -1,7 +1,10 @@
 import { Link } from "@tanstack/react-router";
-import { Scissors, Store } from "lucide-react";
+import { Scissors, Store, LogIn, LogOut } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
 
 export function SiteHeader() {
+  const { user, signOut } = useAuth();
+
   return (
     <header className="sticky top-0 z-40 border-b border-border/70 bg-background/85 backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
