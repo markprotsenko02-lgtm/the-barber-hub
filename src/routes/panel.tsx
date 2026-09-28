@@ -1,7 +1,7 @@
 import * as React from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { toast } from "sonner";
-import { ArrowLeft, ImagePlus, Trash2, Eye } from "lucide-react";
+import { ArrowLeft, ImagePlus, Trash2, Eye, Save } from "lucide-react";
 import { z } from "zod";
 import {
   AVAILABILITIES,
@@ -9,10 +9,12 @@ import {
   CONTRACT_TYPES,
   SPECIALTIES,
   type Availability,
+  type Barber,
   type ContractType,
   type Specialty,
 } from "@/lib/barber-data";
-import { useBarbers } from "@/lib/barber-store";
+import { useBarbers, useMyBarber } from "@/lib/barber-store";
+import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -52,28 +54,83 @@ const mediaSchema = z.object({
 });
 
 function PanelPage() {
-  const { barbers, updateBarber, addGalleryItem, removeGalleryItem } = useBarbers();
-  const [selected, setSelected] = React.useState(barbers[0]?.id ?? "");
-  const barber = barbers.find((b) => b.id === selected) ?? barbers[0];
+  const { user, loading: authLoading } = useAuth();
+  const myBarberQ = useMyBarber(!!user);
 
-  const [media, setMedia] = React.useState({ url: "", caption: "", type: "image" as "image" | "video" });
-  const [mediaError, setMediaError] = React.useState("");
+  if (authLoading || (user && myBarberQ.isLoading)) {
+    return (
+      <div className="mx-auto max-w-xl px-4 py-16 text-center text-sm text-muted-foreground">
+        Cargando tu panel…
+      </div>
+    );
+  }
 
-  if (!barber)
+  if (!user) {
+    return (
+      <div className="mx-auto max-w-xl px-4 py-16 text-center">
+        <h1 className="font-display text-3xl font-semibold uppercase">Inicia sesión</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          El panel es solo para usuarios registrados. Entra o crea tu cuenta para editar tu
+          portfolio.
+        </p>
+        <Button asChild className="mt-6">
+          <Link to="/auth">Entrar / Registrarse</Link>
+        </Button>
+      </div>
+    );
+  }
+
+  const barber = myBarberQ.data ?? null;
+
+  if (!barber) {
     return (
       <div className="mx-auto max-w-xl px-4 py-16 text-center">
         <h1 className="font-display text-3xl font-semibold uppercase">Aún no tienes portfolio</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Publica tu portfolio para poder editarlo aquí.</p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Publica tu portfolio para poder editarlo aquí.
+        </p>
         <Button asChild className="mt-6">
           <Link to="/publicar-portfolio">Publicar mi portfolio</Link>
         </Button>
       </div>
     );
+  }
+
+  return <PanelEditor key={barber.id} barber={barber} />;
+}
+
+function PanelEditor({ barber }: { barber: Barber }) {
+  const { updateBarber, addGalleryItem, removeGalleryItem } = useBarbers();
+  const [draft, setDraft] = React.useState<Barber>(barber);
+  const [saving, setSaving] = React.useState(false);
+  const [media, setMedia] = React.useState({
+    url: "",
+    caption: "",
+    type: "image" as "image" | "video",
+  });
+  const [mediaError, setMediaError] = React.useState("");
+
+  const patch = (p: Partial<Barber>) => setDraft((d) => ({ ...d, ...p }));
 
   const toggle = <T extends string>(list: T[], value: T): T[] =>
     list.includes(value) ? list.filter((v) => v !== value) : [...list, value];
 
-  const addMedia = (e: React.FormEvent) => {
+  const save = async () => {
+    setSaving(true);
+    try {
+      const { id: _id, ...input } = draft;
+      await updateBarber(barber.id, input);
+      toast.success("Cambios guardados", {
+        description: "Tu portfolio ya está actualizado en el muro.",
+      });
+    } catch {
+      toast.error("No se pudieron guardar los cambios");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const addMedia = async (e: React.FormEvent) => {
     e.preventDefault();
     const parsed = mediaSchema.safeParse(media);
     if (!parsed.success) {
@@ -81,13 +138,33 @@ function PanelPage() {
       return;
     }
     setMediaError("");
-    addGalleryItem(barber.id, {
-      type: media.type,
-      url: parsed.data.url,
-      caption: parsed.data.caption,
-    });
-    setMedia({ url: "", caption: "", type: media.type });
-    toast.success("Trabajo añadido a tu galería");
+    try {
+      await addGalleryItem(barber.id, {
+        type: media.type,
+        url: parsed.data.url,
+        caption: parsed.data.caption,
+      });
+      setDraft((d) => ({
+        ...d,
+        gallery: [
+          { id: `g-${Date.now().toString(36)}`, type: media.type, url: parsed.data.url, caption: parsed.data.caption },
+          ...d.gallery,
+        ],
+      }));
+      setMedia({ url: "", caption: "", type: media.type });
+      toast.success("Trabajo añadido a tu galería");
+    } catch {
+      toast.error("No se pudo añadir el trabajo");
+    }
+  };
+
+  const removeMedia = async (itemId: string) => {
+    try {
+      await removeGalleryItem(barber.id, itemId);
+      setDraft((d) => ({ ...d, gallery: d.gallery.filter((g) => g.id !== itemId) }));
+    } catch {
+      toast.error("No se pudo eliminar");
+    }
   };
 
   return (
@@ -101,34 +178,19 @@ function PanelPage() {
           </Button>
           <h1 className="font-display text-3xl font-semibold uppercase">Mi portfolio</h1>
           <p className="text-sm text-muted-foreground">
-            Todo lo que rellenes aquí se ve al instante en el muro de barberos.
+            Edita tus datos y pulsa guardar: se verá al instante en el muro de barberos.
           </p>
         </div>
-        <Button asChild variant="outline" className="shrink-0">
-          <Link to="/barberos/$barberId" params={{ barberId: barber.id }}>
-            <Eye className="h-4 w-4" /> Ver perfil
-          </Link>
-        </Button>
-      </div>
-
-      <div className="mt-6 rounded-xl border border-border/70 bg-card p-4">
-        <label className="block">
-          <span className="mb-1.5 block text-xs uppercase tracking-wider text-muted-foreground">
-            Perfil que estás editando (demo)
-          </span>
-          <Select value={barber.id} onValueChange={setSelected}>
-            <SelectTrigger className="w-full sm:w-72">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {barbers.map((b) => (
-                <SelectItem key={b.id} value={b.id}>
-                  {b.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </label>
+        <div className="flex shrink-0 gap-2">
+          <Button asChild variant="outline">
+            <Link to="/barberos/$barberId" params={{ barberId: barber.id }}>
+              <Eye className="h-4 w-4" /> Ver perfil
+            </Link>
+          </Button>
+          <Button onClick={save} disabled={saving} className="font-semibold">
+            <Save className="h-4 w-4" /> {saving ? "Guardando…" : "Guardar cambios"}
+          </Button>
+        </div>
       </div>
 
       <section className="mt-6 space-y-4 rounded-xl border border-border/70 bg-card p-4">
@@ -136,23 +198,20 @@ function PanelPage() {
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Nombre">
             <Input
-              value={barber.name}
+              value={draft.name}
               maxLength={60}
-              onChange={(e) => updateBarber(barber.id, { name: e.target.value })}
+              onChange={(e) => patch({ name: e.target.value })}
             />
           </Field>
           <Field label="Titular / eslogan">
             <Input
-              value={barber.headline}
+              value={draft.headline}
               maxLength={120}
-              onChange={(e) => updateBarber(barber.id, { headline: e.target.value })}
+              onChange={(e) => patch({ headline: e.target.value })}
             />
           </Field>
           <Field label="Ciudad">
-            <Select
-              value={barber.city}
-              onValueChange={(v) => updateBarber(barber.id, { city: v })}
-            >
+            <Select value={draft.city} onValueChange={(v) => patch({ city: v })}>
               <SelectTrigger className="w-full">
                 <SelectValue />
               </SelectTrigger>
@@ -170,11 +229,9 @@ function PanelPage() {
               type="number"
               min={0}
               max={50}
-              value={barber.experienceYears}
+              value={draft.experienceYears}
               onChange={(e) =>
-                updateBarber(barber.id, {
-                  experienceYears: Math.max(0, Math.min(50, Number(e.target.value) || 0)),
-                })
+                patch({ experienceYears: Math.max(0, Math.min(50, Number(e.target.value) || 0)) })
               }
             />
           </Field>
@@ -183,23 +240,19 @@ function PanelPage() {
           <Textarea
             rows={4}
             maxLength={800}
-            value={barber.bio}
-            onChange={(e) => updateBarber(barber.id, { bio: e.target.value })}
+            value={draft.bio}
+            onChange={(e) => patch({ bio: e.target.value })}
           />
         </Field>
         <Field label="Especialidades">
           <div className="flex flex-wrap gap-2">
             {SPECIALTIES.map((s) => {
-              const on = barber.specialties.includes(s);
+              const on = draft.specialties.includes(s);
               return (
                 <button
                   key={s}
                   type="button"
-                  onClick={() =>
-                    updateBarber(barber.id, {
-                      specialties: toggle<Specialty>(barber.specialties, s),
-                    })
-                  }
+                  onClick={() => patch({ specialties: toggle<Specialty>(draft.specialties, s) })}
                   className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
                     on
                       ? "border-primary bg-primary text-primary-foreground"
@@ -215,21 +268,17 @@ function PanelPage() {
       </section>
 
       <section className="mt-6 space-y-4 rounded-xl border border-border/70 bg-card p-4">
-        <h2 className="font-display text-xl uppercase tracking-wide">
-          Expectativas laborales
-        </h2>
+        <h2 className="font-display text-xl uppercase tracking-wide">Expectativas laborales</h2>
         <Field label="Tipo de contrato que busco">
           <div className="flex flex-wrap gap-2">
             {CONTRACT_TYPES.map((c) => {
-              const on = barber.contractTypes.includes(c);
+              const on = draft.contractTypes.includes(c);
               return (
                 <button
                   key={c}
                   type="button"
                   onClick={() =>
-                    updateBarber(barber.id, {
-                      contractTypes: toggle<ContractType>(barber.contractTypes, c),
-                    })
+                    patch({ contractTypes: toggle<ContractType>(draft.contractTypes, c) })
                   }
                   className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
                     on
@@ -246,10 +295,8 @@ function PanelPage() {
         <div className="grid gap-4 sm:grid-cols-3">
           <Field label="Disponibilidad">
             <Select
-              value={barber.availability}
-              onValueChange={(v) =>
-                updateBarber(barber.id, { availability: v as Availability })
-              }
+              value={draft.availability}
+              onValueChange={(v) => patch({ availability: v as Availability })}
             >
               <SelectTrigger className="w-full">
                 <SelectValue />
@@ -268,10 +315,8 @@ function PanelPage() {
               type="number"
               min={0}
               max={9000}
-              value={barber.salaryMin}
-              onChange={(e) =>
-                updateBarber(barber.id, { salaryMin: Number(e.target.value) || 0 })
-              }
+              value={draft.salaryMin}
+              onChange={(e) => patch({ salaryMin: Number(e.target.value) || 0 })}
             />
           </Field>
           <Field label="Salario máximo (€/mes)">
@@ -279,10 +324,8 @@ function PanelPage() {
               type="number"
               min={0}
               max={9000}
-              value={barber.salaryMax}
-              onChange={(e) =>
-                updateBarber(barber.id, { salaryMax: Number(e.target.value) || 0 })
-              }
+              value={draft.salaryMax}
+              onChange={(e) => patch({ salaryMax: Number(e.target.value) || 0 })}
             />
           </Field>
         </div>
@@ -290,18 +333,16 @@ function PanelPage() {
           <Field label="Email de contacto">
             <Input
               type="email"
-              value={barber.email}
+              value={draft.email}
               maxLength={255}
-              onChange={(e) => updateBarber(barber.id, { email: e.target.value })}
+              onChange={(e) => patch({ email: e.target.value })}
             />
           </Field>
           <Field label="WhatsApp (con prefijo, solo números)">
             <Input
-              value={barber.whatsapp}
+              value={draft.whatsapp}
               maxLength={15}
-              onChange={(e) =>
-                updateBarber(barber.id, { whatsapp: e.target.value.replace(/\D/g, "") })
-              }
+              onChange={(e) => patch({ whatsapp: e.target.value.replace(/\D/g, "") })}
             />
           </Field>
         </div>
@@ -309,36 +350,36 @@ function PanelPage() {
 
       <section className="mt-6 space-y-4 rounded-xl border border-border/70 bg-card p-4">
         <h2 className="font-display text-xl uppercase tracking-wide">Formación</h2>
-        {barber.education.map((e, i) => (
+        {draft.education.map((ed, i) => (
           <div key={i} className="grid gap-2 sm:grid-cols-[minmax(0,2fr)_minmax(0,2fr)_90px]">
             <Input
-              value={e.title}
+              value={ed.title}
               maxLength={90}
               placeholder="Curso o certificación"
               onChange={(ev) => {
-                const next = [...barber.education];
-                next[i] = { ...e, title: ev.target.value };
-                updateBarber(barber.id, { education: next });
+                const next = [...draft.education];
+                next[i] = { ...ed, title: ev.target.value };
+                patch({ education: next });
               }}
             />
             <Input
-              value={e.school}
+              value={ed.school}
               maxLength={90}
               placeholder="Academia"
               onChange={(ev) => {
-                const next = [...barber.education];
-                next[i] = { ...e, school: ev.target.value };
-                updateBarber(barber.id, { education: next });
+                const next = [...draft.education];
+                next[i] = { ...ed, school: ev.target.value };
+                patch({ education: next });
               }}
             />
             <Input
-              value={e.year}
+              value={ed.year}
               maxLength={4}
               placeholder="Año"
               onChange={(ev) => {
-                const next = [...barber.education];
-                next[i] = { ...e, year: ev.target.value.replace(/\D/g, "") };
-                updateBarber(barber.id, { education: next });
+                const next = [...draft.education];
+                next[i] = { ...ed, year: ev.target.value.replace(/\D/g, "") };
+                patch({ education: next });
               }}
             />
           </div>
@@ -348,9 +389,7 @@ function PanelPage() {
           variant="outline"
           size="sm"
           onClick={() =>
-            updateBarber(barber.id, {
-              education: [...barber.education, { title: "", school: "", year: "" }],
-            })
+            patch({ education: [...draft.education, { title: "", school: "", year: "" }] })
           }
         >
           Añadir formación
@@ -358,9 +397,7 @@ function PanelPage() {
       </section>
 
       <section className="mt-6 space-y-4 rounded-xl border border-border/70 bg-card p-4">
-        <h2 className="font-display text-xl uppercase tracking-wide">
-          Galería de trabajos
-        </h2>
+        <h2 className="font-display text-xl uppercase tracking-wide">Galería de trabajos</h2>
         <form onSubmit={addMedia} className="grid gap-2 sm:grid-cols-[130px_minmax(0,1fr)]" noValidate>
           <Select
             value={media.type}
@@ -391,13 +428,11 @@ function PanelPage() {
               <ImagePlus className="h-4 w-4" /> Subir
             </Button>
           </div>
-          {mediaError && (
-            <p className="text-xs text-destructive sm:col-span-2">{mediaError}</p>
-          )}
+          {mediaError && <p className="text-xs text-destructive sm:col-span-2">{mediaError}</p>}
         </form>
 
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-          {barber.gallery.map((g) => (
+          {draft.gallery.map((g) => (
             <div key={g.id} className="relative overflow-hidden rounded-lg border border-border/70">
               {g.type === "image" ? (
                 <img src={g.url} alt={g.caption} className="aspect-square w-full object-cover" />
@@ -410,7 +445,7 @@ function PanelPage() {
               <button
                 type="button"
                 aria-label={`Eliminar ${g.caption}`}
-                onClick={() => removeGalleryItem(barber.id, g.id)}
+                onClick={() => removeMedia(g.id)}
                 className="absolute right-1.5 top-1.5 grid h-7 w-7 place-items-center rounded-md bg-background/85 text-destructive transition-colors hover:bg-destructive hover:text-destructive-foreground"
               >
                 <Trash2 className="h-3.5 w-3.5" />
