@@ -2,6 +2,8 @@ import { MapPin, Zap, Check, Mail, MessageCircle } from "lucide-react";
 import type { ShopOffer } from "@/lib/shop-data";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { AuthGate } from "@/components/auth-gate";
+import { ReportButton } from "@/components/report-dialog";
 
 export function OfferCard({ offer }: { offer: ShopOffer }) {
   return (
@@ -71,7 +73,7 @@ export function OfferCard({ offer }: { offer: ShopOffer }) {
               {offer.salaryMin}–{offer.salaryMax} €/mes
             </span>
           </div>
-          <div className="grid grid-cols-2 gap-2">
+          <AuthGate className="grid grid-cols-2 gap-2">
             <Button asChild size="sm" className="font-semibold">
               <a
                 href={`https://wa.me/${offer.whatsapp}?text=${encodeURIComponent(
@@ -88,7 +90,8 @@ export function OfferCard({ offer }: { offer: ShopOffer }) {
                 <Mail className="h-4 w-4" /> Email
               </a>
             </Button>
-          </div>
+          </AuthGate>
+          <ReportButton target={{ type: "barbería", id: offer.id, name: offer.shopName, email: offer.email, whatsapp: offer.whatsapp }} />
         </div>
       </div>
     </article>

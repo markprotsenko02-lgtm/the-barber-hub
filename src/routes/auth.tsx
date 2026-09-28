@@ -298,6 +298,13 @@ function AuthPage() {
           {mode === "signup" ? "Crear mi cuenta" : "Entrar"}
         </button>
       </form>
+      <button
+        type="button"
+        onClick={() => navigate({ to: "/" })}
+        className="mt-3 w-full rounded-lg border border-border px-4 py-3 font-display text-xs font-semibold uppercase tracking-wider text-muted-foreground transition-colors hover:border-primary/60 hover:text-primary"
+      >
+        Seguir como invitado
+      </button>
     </main>
   );
 }
