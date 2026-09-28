@@ -64,10 +64,4 @@ export type Barber = {
   featured?: boolean;
 };
 
-const img = (id: string, w = 900) =>
-  `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=80`;
-
-const SAMPLE_VIDEO =
-  "https://cdn.coverr.co/videos/coverr-a-barber-cutting-hair-4249/1080p.mp4";
-
 export const SEED_BARBERS: Barber[] = [];
