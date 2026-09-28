@@ -127,6 +127,28 @@ function BarberProfile() {
             </a>
           </Button>
         </AuthGate>
+
+        <div className="mt-4 flex flex-wrap gap-2">
+          <a
+            href={waLink}
+            target="_blank"
+            rel="noreferrer noopener"
+            className="flex items-center gap-2 rounded-lg border border-border/70 bg-card px-3 py-2 text-sm transition-colors hover:border-primary/60"
+          >
+            <MessageCircle className="h-4 w-4 text-primary" />
+            <span className="text-muted-foreground">WhatsApp:</span>
+            <span className="font-medium">+{barber.whatsapp}</span>
+          </a>
+          <a
+            href={`mailto:${barber.email}`}
+            className="flex items-center gap-2 rounded-lg border border-border/70 bg-card px-3 py-2 text-sm transition-colors hover:border-primary/60"
+          >
+            <Mail className="h-4 w-4 text-primary" />
+            <span className="text-muted-foreground">Email:</span>
+            <span className="font-medium">{barber.email}</span>
+          </a>
+        </div>
+
         <ReportButton className="mt-3" target={{ type: "barbero", id: barber.id, name: barber.name, email: barber.email, whatsapp: barber.whatsapp }} />
 
         <div className="mt-10 grid gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
