@@ -63,5 +63,3 @@ export type Barber = {
   gallery: GalleryItem[];
   featured?: boolean;
 };
-
-export const SEED_BARBERS: Barber[] = [];

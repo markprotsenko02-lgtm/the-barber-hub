@@ -15,6 +15,13 @@
       "when": 1790619481802,
       "tag": "0001_create_reports",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790622645154,
+      "tag": "0002_create_barbers_and_shop_offers",
+      "breakpoints": true
     }
   ]
 }

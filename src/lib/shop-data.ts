@@ -17,5 +17,3 @@ export type ShopOffer = {
   whatsapp: string;
   urgent?: boolean;
 };
-
-export const SEED_OFFERS: ShopOffer[] = [];

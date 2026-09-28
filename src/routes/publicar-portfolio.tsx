@@ -14,6 +14,7 @@ import {
   type Specialty,
 } from "@/lib/barber-data";
 import { useBarbers } from "@/lib/barber-store";
+import { useAuth } from "@/hooks/use-auth";
 import { TipsPanel } from "@/components/tips-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -92,7 +93,9 @@ const TIPS = [
 
 function PublishPortfolio() {
   const { addBarber } = useBarbers();
+  const { user } = useAuth();
   const navigate = useNavigate();
+  const [submitting, setSubmitting] = React.useState(false);
   const [form, setForm] = React.useState({
     name: "",
     headline: "",
@@ -137,8 +140,15 @@ function PublishPortfolio() {
     setMedia({ type: media.type, url: "", caption: "" });
   };
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) {
+      toast.error("Inicia sesión para publicar tu portfolio", {
+        description: "Crea tu cuenta gratis en un minuto.",
+      });
+      navigate({ to: "/auth" });
+      return;
+    }
     const parsed = schema.safeParse({
       ...form,
       experienceYears: Number(form.experienceYears) || 0,
@@ -165,40 +175,47 @@ function PublishPortfolio() {
     }
     setErrors({});
 
-    const id = `barber-${Date.now().toString(36)}`;
     const firstImage = gallery.find((g) => g.type === "image");
-    addBarber({
-      id,
-      name: parsed.data.name,
-      headline: parsed.data.headline,
-      city: form.city,
-      avatar: DEFAULT_AVATAR,
-      cover: firstImage?.url ?? DEFAULT_COVER,
-      specialties,
-      contractTypes: contracts,
-      availability: form.availability,
-      salaryMin: parsed.data.salaryMin,
-      salaryMax: parsed.data.salaryMax,
-      experienceYears: parsed.data.experienceYears,
-      bio: parsed.data.bio,
-      education: form.education
-        .split("\n")
-        .map((line) => line.trim())
-        .filter(Boolean)
-        .slice(0, 6)
-        .map((line) => {
-          const [title, school, year] = line.split("|").map((p) => p.trim());
-          return { title: title ?? line, school: school ?? "", year: year ?? "" };
-        }),
-      email: parsed.data.email,
-      whatsapp: parsed.data.whatsapp,
-      ...(form.instagram.trim() ? { instagram: form.instagram.trim() } : {}),
-      gallery,
-    });
-    toast.success("Portfolio publicado", {
-      description: "Ya apareces en el muro de barberos.",
-    });
-    navigate({ to: "/barberos/$barberId", params: { barberId: id } });
+    setSubmitting(true);
+    try {
+      const created = await addBarber({
+        name: parsed.data.name,
+        headline: parsed.data.headline,
+        city: form.city,
+        avatar: DEFAULT_AVATAR,
+        cover: firstImage?.url ?? DEFAULT_COVER,
+        specialties,
+        contractTypes: contracts,
+        availability: form.availability,
+        salaryMin: parsed.data.salaryMin,
+        salaryMax: parsed.data.salaryMax,
+        experienceYears: parsed.data.experienceYears,
+        bio: parsed.data.bio,
+        education: form.education
+          .split("\n")
+          .map((line) => line.trim())
+          .filter(Boolean)
+          .slice(0, 6)
+          .map((line) => {
+            const [title, school, year] = line.split("|").map((p) => p.trim());
+            return { title: title ?? line, school: school ?? "", year: year ?? "" };
+          }),
+        email: parsed.data.email,
+        whatsapp: parsed.data.whatsapp,
+        ...(form.instagram.trim() ? { instagram: form.instagram.trim() } : {}),
+        gallery,
+      });
+      toast.success("Portfolio publicado", {
+        description: "Ya apareces en el muro de barberos.",
+      });
+      navigate({ to: "/barberos/$barberId", params: { barberId: created.id } });
+    } catch {
+      toast.error("No se pudo publicar", {
+        description: "Inténtalo de nuevo en unos segundos.",
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -440,8 +457,8 @@ function PublishPortfolio() {
           )}
         </div>
 
-        <Button type="submit" size="lg" className="w-full font-semibold sm:w-auto">
-          Publicar mi portfolio
+        <Button type="submit" size="lg" disabled={submitting} className="w-full font-semibold sm:w-auto">
+          {submitting ? "Publicando…" : "Publicar mi portfolio"}
         </Button>
       </form>
     </div>
