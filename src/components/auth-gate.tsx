@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
  * Wraps contact/report actions. Guests (not signed in) get a notice that
  * they must register or sign in, plus a button to do so.
  */
-export function AuthGate({ children, className }: { children: React.ReactNode; className?: string }) {
+export function AuthGate({ children, className }: { children: React.ReactNode; className?: string | undefined }) {
   const { user } = useAuth();
   const [open, setOpen] = React.useState(false);
 
