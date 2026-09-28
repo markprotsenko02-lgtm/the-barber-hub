@@ -24,13 +24,13 @@ import { Slider } from "@/components/ui/slider";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "BarberMatch — Portfolios de barberos y ofertas de barberías" },
+      { title: "BarberHub — Portfolios de barberos y ofertas de barberías" },
       {
         name: "description",
         content:
           "Muro visual de portfolios de barberos y anuncios de barberías que buscan personal. Filtra por ciudad, especialidad, contrato y salario.",
       },
-      { property: "og:title", content: "BarberMatch — Talento de barbería en un solo muro" },
+      { property: "og:title", content: "BarberHub — Talento de barbería en un solo muro" },
       {
         property: "og:description",
         content:

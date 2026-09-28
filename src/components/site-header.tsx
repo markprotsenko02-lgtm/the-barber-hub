@@ -71,14 +71,14 @@ export function SiteFooter() {
     <footer className="mt-20 border-t border-border/70 bg-surface/40">
       <div className="mx-auto max-w-7xl px-4 py-10 text-sm text-muted-foreground sm:px-6">
         <p className="font-display text-base uppercase tracking-[0.2em] text-foreground">
-          BarberMatch
+          BarberHub
         </p>
         <p className="mt-2 max-w-md">
           El escaparate donde los barberos muestran su trabajo y las barberías
           fichan talento con criterio.
         </p>
         <p className="mt-6 text-xs">
-          Datos de demostración con fines de prueba. © {new Date().getFullYear()} BarberMatch.
+          Datos de demostración con fines de prueba. © {new Date().getFullYear()} BarberHub.
         </p>
       </div>
     </footer>

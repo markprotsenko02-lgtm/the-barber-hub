@@ -28,13 +28,13 @@ import {
 export const Route = createFileRoute("/panel")({
   head: () => ({
     meta: [
-      { title: "Panel del barbero — Publica tu portfolio | BarberMatch" },
+      { title: "Panel del barbero — Publica tu portfolio | BarberHub" },
       {
         name: "description",
         content:
           "Actualiza tu perfil de barbero: especialidades, formación, disponibilidad, salario esperado y sube fotos o vídeos de tus cortes.",
       },
-      { property: "og:title", content: "Panel del barbero — BarberMatch" },
+      { property: "og:title", content: "Panel del barbero — BarberHub" },
       {
         property: "og:description",
         content: "Crea y edita tu portfolio de barbero en pocos minutos.",

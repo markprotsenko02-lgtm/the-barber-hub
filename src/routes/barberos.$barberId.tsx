@@ -20,13 +20,13 @@ import { ContactForm } from "@/components/contact-form";
 export const Route = createFileRoute("/barberos/$barberId")({
   head: () => ({
     meta: [
-      { title: "Perfil de barbero — BarberMatch" },
+      { title: "Perfil de barbero — BarberHub" },
       {
         name: "description",
         content:
           "Portfolio del barbero: galería de cortes, formación, disponibilidad, tipo de contrato y salario esperado.",
       },
-      { property: "og:title", content: "Perfil de barbero — BarberMatch" },
+      { property: "og:title", content: "Perfil de barbero — BarberHub" },
       {
         property: "og:description",
         content: "Galería de trabajos, formación y condiciones laborales del barbero.",
@@ -58,7 +58,7 @@ function BarberProfile() {
   }
 
   const waLink = `https://wa.me/${barber.whatsapp}?text=${encodeURIComponent(
-    `Hola ${barber.name}, he visto tu portfolio en BarberMatch y me gustaría hablar contigo sobre una vacante.`,
+    `Hola ${barber.name}, he visto tu portfolio en BarberHub y me gustaría hablar contigo sobre una vacante.`,
   )}`;
 
   return (
@@ -118,7 +118,7 @@ function BarberProfile() {
           <Button asChild variant="outline">
             <a
               href={`mailto:${barber.email}?subject=${encodeURIComponent(
-                "Oferta de trabajo vía BarberMatch",
+                "Oferta de trabajo vía BarberHub",
               )}`}
             >
               <Mail className="h-4 w-4" /> Enviar email
