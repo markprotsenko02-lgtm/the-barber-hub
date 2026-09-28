@@ -1,101 +1,134 @@
 import * as React from "react";
-import { SEED_BARBERS, type Barber, type GalleryItem } from "./barber-data";
-import { SEED_OFFERS, type ShopOffer } from "./shop-data";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import type { Tables } from "@/integrations/supabase/types";
+import type { Barber, GalleryItem, Specialty, ContractType, Availability } from "./barber-data";
+import type { ShopOffer } from "./shop-data";
+import {
+  createBarber,
+  createOffer,
+  getMyBarber,
+  listBarbers,
+  listOffers,
+  updateBarber as updateBarberFn,
+} from "./directory.functions";
 
-const BARBERS_KEY = "barbermatch.barbers.v2";
-const OFFERS_KEY = "barbermatch.offers.v2";
+export function mapBarber(r: Tables<"barbers">): Barber {
+  return {
+    id: r.id,
+    name: r.name,
+    headline: r.headline,
+    city: r.city,
+    avatar: r.avatar,
+    cover: r.cover,
+    specialties: r.specialties as Specialty[],
+    contractTypes: r.contract_types as ContractType[],
+    availability: r.availability as Availability,
+    salaryMin: r.salary_min,
+    salaryMax: r.salary_max,
+    experienceYears: r.experience_years,
+    bio: r.bio,
+    education: (r.education as Barber["education"]) ?? [],
+    email: r.email,
+    whatsapp: r.whatsapp,
+    ...(r.instagram ? { instagram: r.instagram } : {}),
+    gallery: (r.gallery as GalleryItem[]) ?? [],
+  };
+}
+
+export function mapOffer(r: Tables<"shop_offers">): ShopOffer {
+  return {
+    id: r.id,
+    shopName: r.shop_name,
+    city: r.city,
+    logo: r.logo,
+    cover: r.cover,
+    lookingFor: r.looking_for,
+    specialties: r.specialties as Specialty[],
+    contractType: r.contract_type as ContractType,
+    salaryMin: r.salary_min,
+    salaryMax: r.salary_max,
+    conditions: r.conditions,
+    description: r.description,
+    email: r.email,
+    whatsapp: r.whatsapp,
+    ...(r.urgent ? { urgent: true } : {}),
+  };
+}
+
+export type BarberInput = Omit<Barber, "id">;
+export type OfferInput = Omit<ShopOffer, "id">;
 
 type Ctx = {
   barbers: Barber[];
   offers: ShopOffer[];
-  updateBarber: (id: string, patch: Partial<Barber>) => void;
-  addBarber: (barber: Barber) => void;
-  addGalleryItem: (id: string, item: Omit<GalleryItem, "id">) => void;
-  removeGalleryItem: (id: string, itemId: string) => void;
-  addOffer: (offer: ShopOffer) => void;
+  isLoading: boolean;
+  addBarber: (input: BarberInput) => Promise<Barber>;
+  updateBarber: (id: string, patch: Partial<BarberInput>) => Promise<void>;
+  addGalleryItem: (id: string, item: Omit<GalleryItem, "id">) => Promise<void>;
+  removeGalleryItem: (id: string, itemId: string) => Promise<void>;
+  addOffer: (input: OfferInput) => Promise<void>;
 };
 
-const BarberContext = React.createContext<Ctx | null>(null);
+export function useBarbers(): Ctx {
+  const qc = useQueryClient();
+  const barbersQ = useQuery({
+    queryKey: ["barbers"],
+    queryFn: async () => (await listBarbers()).map(mapBarber),
+  });
+  const offersQ = useQuery({
+    queryKey: ["offers"],
+    queryFn: async () => (await listOffers()).map(mapOffer),
+  });
 
-function load<T>(key: string, fallback: T[]): T[] {
-  try {
-    const raw = window.localStorage.getItem(key);
-    if (raw) {
-      const parsed = JSON.parse(raw) as T[];
-      if (Array.isArray(parsed) && parsed.length >= 0) return parsed;
-    }
-  } catch {
-    /* ignore corrupt storage */
-  }
-  return fallback;
-}
-
-function save<T>(key: string, value: T[]) {
-  try {
-    window.localStorage.setItem(key, JSON.stringify(value));
-  } catch {
-    /* storage unavailable */
-  }
-}
-
-export function BarberProvider({ children }: { children: React.ReactNode }) {
-  const [barbers, setBarbers] = React.useState<Barber[]>(SEED_BARBERS);
-  const [offers, setOffers] = React.useState<ShopOffer[]>(SEED_OFFERS);
-
-  React.useEffect(() => {
-    setBarbers(load(BARBERS_KEY, SEED_BARBERS));
-    setOffers(load(OFFERS_KEY, SEED_OFFERS));
-  }, []);
-
-  const persistBarbers = React.useCallback((next: Barber[]) => {
-    setBarbers(next);
-    save(BARBERS_KEY, next);
-  }, []);
-
-  const persistOffers = React.useCallback((next: ShopOffer[]) => {
-    setOffers(next);
-    save(OFFERS_KEY, next);
-  }, []);
-
-  const value = React.useMemo<Ctx>(
-    () => ({
-      barbers,
-      offers,
-      updateBarber: (id, patch) =>
-        persistBarbers(barbers.map((b) => (b.id === id ? { ...b, ...patch } : b))),
-      addBarber: (barber) => persistBarbers([barber, ...barbers]),
-      addGalleryItem: (id, item) =>
-        persistBarbers(
-          barbers.map((b) =>
-            b.id === id
-              ? {
-                  ...b,
-                  gallery: [
-                    { ...item, id: `g-${Date.now().toString(36)}` },
-                    ...b.gallery,
-                  ],
-                }
-              : b,
-          ),
-        ),
-      removeGalleryItem: (id, itemId) =>
-        persistBarbers(
-          barbers.map((b) =>
-            b.id === id
-              ? { ...b, gallery: b.gallery.filter((g) => g.id !== itemId) }
-              : b,
-          ),
-        ),
-      addOffer: (offer) => persistOffers([offer, ...offers]),
-    }),
-    [barbers, offers, persistBarbers, persistOffers],
+  const invalidate = React.useCallback(
+    () => qc.invalidateQueries({ queryKey: ["barbers"] }),
+    [qc],
   );
 
-  return <BarberContext.Provider value={value}>{children}</BarberContext.Provider>;
+  return {
+    barbers: barbersQ.data ?? [],
+    offers: offersQ.data ?? [],
+    isLoading: barbersQ.isLoading || offersQ.isLoading,
+    addBarber: async (input) => {
+      const row = await createBarber({ data: input });
+      await invalidate();
+      return mapBarber(row);
+    },
+    updateBarber: async (id, patch) => {
+      await updateBarberFn({ data: { id, patch } });
+      await invalidate();
+    },
+    addGalleryItem: async (id, item) => {
+      const barber = (barbersQ.data ?? []).find((b) => b.id === id);
+      if (!barber) return;
+      const gallery: GalleryItem[] = [
+        { ...item, id: `g-${Date.now().toString(36)}` },
+        ...barber.gallery,
+      ];
+      await updateBarberFn({ data: { id, patch: { gallery } } });
+      await invalidate();
+    },
+    removeGalleryItem: async (id, itemId) => {
+      const barber = (barbersQ.data ?? []).find((b) => b.id === id);
+      if (!barber) return;
+      const gallery = barber.gallery.filter((g) => g.id !== itemId);
+      await updateBarberFn({ data: { id, patch: { gallery } } });
+      await invalidate();
+    },
+    addOffer: async (input) => {
+      await createOffer({ data: input });
+      await qc.invalidateQueries({ queryKey: ["offers"] });
+    },
+  };
 }
 
-export function useBarbers() {
-  const ctx = React.useContext(BarberContext);
-  if (!ctx) throw new Error("useBarbers must be used inside BarberProvider");
-  return ctx;
+export function useMyBarber(enabled: boolean) {
+  return useQuery({
+    queryKey: ["my-barber"],
+    enabled,
+    queryFn: async () => {
+      const row = await getMyBarber();
+      return row ? mapBarber(row) : null;
+    },
+  });
 }
