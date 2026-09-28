@@ -59,7 +59,16 @@ function PanelPage() {
   const [media, setMedia] = React.useState({ url: "", caption: "", type: "image" as "image" | "video" });
   const [mediaError, setMediaError] = React.useState("");
 
-  if (!barber) return null;
+  if (!barber)
+    return (
+      <div className="mx-auto max-w-xl px-4 py-16 text-center">
+        <h1 className="font-display text-3xl font-semibold uppercase">Aún no tienes portfolio</h1>
+        <p className="mt-2 text-sm text-muted-foreground">Publica tu portfolio para poder editarlo aquí.</p>
+        <Button asChild className="mt-6">
+          <Link to="/publicar-portfolio">Publicar mi portfolio</Link>
+        </Button>
+      </div>
+    );
 
   const toggle = <T extends string>(list: T[], value: T): T[] =>
     list.includes(value) ? list.filter((v) => v !== value) : [...list, value];
