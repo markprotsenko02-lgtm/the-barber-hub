@@ -26,13 +26,13 @@ import {
 export const Route = createFileRoute("/publicar-oferta")({
   head: () => ({
     meta: [
-      { title: "Publicar búsqueda de barbero — BarberMatch" },
+      { title: "Publicar búsqueda de barbero — BarberHub" },
       {
         name: "description",
         content:
           "Publica el anuncio de tu barbería: a quién buscas, especialidades requeridas, ciudad, contrato y condiciones ofrecidas.",
       },
-      { property: "og:title", content: "Publicar búsqueda de barbero — BarberMatch" },
+      { property: "og:title", content: "Publicar búsqueda de barbero — BarberHub" },
       {
         property: "og:description",
         content: "Llega a barberos con portfolio publicado en tu ciudad.",

@@ -80,13 +80,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "BarberMatch — Portfolios y fichajes de barbería" },
+      { title: "BarberHub — Portfolios y fichajes de barbería" },
       {
         name: "description",
         content:
           "Portfolios de barberos y anuncios de barberías buscando personal, en un solo muro visual.",
       },
-      { property: "og:title", content: "BarberMatch" },
+      { property: "og:title", content: "BarberHub" },
       {
         property: "og:description",
         content: "Portfolios de barberos y ofertas de barberías.",
@@ -105,7 +105,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Barlow:wght@400;500;600;700&display=swap",
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", href: "/favicon.png", type: "image/png" }, { rel: "apple-touch-icon", href: "/logo.png" },
     ],
   }),
   shellComponent: RootShell,

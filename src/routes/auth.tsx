@@ -8,16 +8,16 @@ import { useAuth } from "@/hooks/use-auth";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Acceder o crear cuenta — BarberMatch" },
+      { title: "Acceder o crear cuenta — BarberHub" },
       {
         name: "description",
         content:
-          "Inicia sesión o regístrate en BarberMatch con tu nombre, apellidos y correo para publicar tu portfolio u ofertas.",
+          "Inicia sesión o regístrate en BarberHub con tu nombre, apellidos y correo para publicar tu portfolio u ofertas.",
       },
-      { property: "og:title", content: "Acceder o crear cuenta — BarberMatch" },
+      { property: "og:title", content: "Acceder o crear cuenta — BarberHub" },
       {
         property: "og:description",
-        content: "Entra en BarberMatch para gestionar tu portfolio u ofertas de barbería.",
+        content: "Entra en BarberHub para gestionar tu portfolio u ofertas de barbería.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

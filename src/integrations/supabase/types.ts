@@ -38,6 +38,51 @@ export type Database = {
         }
         Relationships: []
       }
+      reports: {
+        Row: {
+          created_at: string
+          details: string
+          id: string
+          reason: string
+          reporter_email: string
+          reporter_id: string
+          reporter_name: string
+          target_email: string | null
+          target_id: string
+          target_name: string
+          target_type: string
+          target_whatsapp: string | null
+        }
+        Insert: {
+          created_at?: string
+          details?: string
+          id?: string
+          reason: string
+          reporter_email: string
+          reporter_id: string
+          reporter_name: string
+          target_email?: string | null
+          target_id: string
+          target_name: string
+          target_type: string
+          target_whatsapp?: string | null
+        }
+        Update: {
+          created_at?: string
+          details?: string
+          id?: string
+          reason?: string
+          reporter_email?: string
+          reporter_id?: string
+          reporter_name?: string
+          target_email?: string | null
+          target_id?: string
+          target_name?: string
+          target_type?: string
+          target_whatsapp?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
