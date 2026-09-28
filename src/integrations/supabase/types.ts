@@ -14,6 +14,75 @@ export type Database = {
   }
   public: {
     Tables: {
+      barbers: {
+        Row: {
+          availability: string
+          avatar: string
+          bio: string
+          city: string
+          contract_types: string[]
+          cover: string
+          created_at: string
+          education: Json
+          email: string
+          experience_years: number
+          gallery: Json
+          headline: string
+          id: string
+          instagram: string | null
+          name: string
+          salary_max: number
+          salary_min: number
+          specialties: string[]
+          user_id: string
+          whatsapp: string
+        }
+        Insert: {
+          availability?: string
+          avatar?: string
+          bio?: string
+          city?: string
+          contract_types?: string[]
+          cover?: string
+          created_at?: string
+          education?: Json
+          email?: string
+          experience_years?: number
+          gallery?: Json
+          headline?: string
+          id?: string
+          instagram?: string | null
+          name: string
+          salary_max?: number
+          salary_min?: number
+          specialties?: string[]
+          user_id: string
+          whatsapp?: string
+        }
+        Update: {
+          availability?: string
+          avatar?: string
+          bio?: string
+          city?: string
+          contract_types?: string[]
+          cover?: string
+          created_at?: string
+          education?: Json
+          email?: string
+          experience_years?: number
+          gallery?: Json
+          headline?: string
+          id?: string
+          instagram?: string | null
+          name?: string
+          salary_max?: number
+          salary_min?: number
+          specialties?: string[]
+          user_id?: string
+          whatsapp?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -80,6 +149,66 @@ export type Database = {
           target_name?: string
           target_type?: string
           target_whatsapp?: string | null
+        }
+        Relationships: []
+      }
+      shop_offers: {
+        Row: {
+          city: string
+          conditions: string[]
+          contract_type: string
+          cover: string
+          created_at: string
+          description: string
+          email: string
+          id: string
+          logo: string
+          looking_for: string
+          salary_max: number
+          salary_min: number
+          shop_name: string
+          specialties: string[]
+          urgent: boolean
+          user_id: string
+          whatsapp: string
+        }
+        Insert: {
+          city?: string
+          conditions?: string[]
+          contract_type?: string
+          cover?: string
+          created_at?: string
+          description?: string
+          email?: string
+          id?: string
+          logo?: string
+          looking_for?: string
+          salary_max?: number
+          salary_min?: number
+          shop_name: string
+          specialties?: string[]
+          urgent?: boolean
+          user_id: string
+          whatsapp?: string
+        }
+        Update: {
+          city?: string
+          conditions?: string[]
+          contract_type?: string
+          cover?: string
+          created_at?: string
+          description?: string
+          email?: string
+          id?: string
+          logo?: string
+          looking_for?: string
+          salary_max?: number
+          salary_min?: number
+          shop_name?: string
+          specialties?: string[]
+          urgent?: boolean
+          user_id?: string
+          whatsapp?: string
         }
         Relationships: []
       }
