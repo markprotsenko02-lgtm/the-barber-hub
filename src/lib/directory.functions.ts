@@ -141,24 +141,25 @@ export const updateBarber = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const p = data.patch;
-    const update: Database["public"]["Tables"]["barbers"]["Update"] = {};
-    if (p.name !== undefined) update["name"] = p.name;
-    if (p.headline !== undefined) update["headline"] = p.headline;
-    if (p.city !== undefined) update["city"] = p.city;
-    if (p.avatar !== undefined) update["avatar"] = p.avatar;
-    if (p.cover !== undefined) update["cover"] = p.cover;
-    if (p.specialties !== undefined) update["specialties"] = p.specialties;
-    if (p.contractTypes !== undefined) update["contract_types"] = p.contractTypes;
-    if (p.availability !== undefined) update["availability"] = p.availability;
-    if (p.salaryMin !== undefined) update["salary_min"] = p.salaryMin;
-    if (p.salaryMax !== undefined) update["salary_max"] = p.salaryMax;
-    if (p.experienceYears !== undefined) update["experience_years"] = p.experienceYears;
-    if (p.bio !== undefined) update["bio"] = p.bio;
-    if (p.education !== undefined) update["education"] = p.education;
-    if (p.email !== undefined) update["email"] = p.email;
-    if (p.whatsapp !== undefined) update["whatsapp"] = p.whatsapp;
-    if (p.instagram !== undefined) update["instagram"] = p.instagram ?? null;
-    if (p.gallery !== undefined) update["gallery"] = p.gallery;
+    const update = {
+      ...(p.name !== undefined && { name: p.name }),
+      ...(p.headline !== undefined && { headline: p.headline }),
+      ...(p.city !== undefined && { city: p.city }),
+      ...(p.avatar !== undefined && { avatar: p.avatar }),
+      ...(p.cover !== undefined && { cover: p.cover }),
+      ...(p.specialties !== undefined && { specialties: p.specialties }),
+      ...(p.contractTypes !== undefined && { contract_types: p.contractTypes }),
+      ...(p.availability !== undefined && { availability: p.availability }),
+      ...(p.salaryMin !== undefined && { salary_min: p.salaryMin }),
+      ...(p.salaryMax !== undefined && { salary_max: p.salaryMax }),
+      ...(p.experienceYears !== undefined && { experience_years: p.experienceYears }),
+      ...(p.bio !== undefined && { bio: p.bio }),
+      ...(p.education !== undefined && { education: p.education }),
+      ...(p.email !== undefined && { email: p.email }),
+      ...(p.whatsapp !== undefined && { whatsapp: p.whatsapp }),
+      ...(p.instagram !== undefined && { instagram: p.instagram ?? null }),
+      ...(p.gallery !== undefined && { gallery: p.gallery }),
+    } satisfies Database["public"]["Tables"]["barbers"]["Update"];
     const { error } = await context.supabase
       .from("barbers")
       .update(update)
