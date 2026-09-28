@@ -14,6 +14,7 @@ import {
   type Specialty,
 } from "@/lib/barber-data";
 import { useBarbers } from "@/lib/barber-store";
+import { useAuth } from "@/hooks/use-auth";
 import { TipsPanel } from "@/components/tips-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
