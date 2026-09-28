@@ -11,6 +11,7 @@ import {
   type Specialty,
 } from "@/lib/barber-data";
 import { useBarbers } from "@/lib/barber-store";
+import { useAuth } from "@/hooks/use-auth";
 import { TipsPanel } from "@/components/tips-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -89,7 +90,9 @@ const OFFER_TIPS = [
 
 function PublishOffer() {
   const { addOffer } = useBarbers();
+  const { user } = useAuth();
   const navigate = useNavigate();
+  const [submitting, setSubmitting] = React.useState(false);
   const [form, setForm] = React.useState({
     shopName: "",
     lookingFor: "",
@@ -105,8 +108,15 @@ function PublishOffer() {
   const [specialties, setSpecialties] = React.useState<Specialty[]>([]);
   const [errors, setErrors] = React.useState<Record<string, string>>({});
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) {
+      toast.error("Inicia sesión para publicar tu anuncio", {
+        description: "Crea tu cuenta gratis en un minuto.",
+      });
+      navigate({ to: "/auth" });
+      return;
+    }
     const parsed = schema.safeParse({
       ...form,
       salaryMin: Number(form.salaryMin) || 0,
@@ -123,30 +133,38 @@ function PublishOffer() {
       return;
     }
     setErrors({});
-    addOffer({
-      id: `offer-${Date.now().toString(36)}`,
-      shopName: parsed.data.shopName,
-      city: form.city,
-      logo: DEFAULT_LOGO,
-      cover: DEFAULT_COVER,
-      lookingFor: parsed.data.lookingFor,
-      specialties,
-      contractType: form.contractType,
-      salaryMin: parsed.data.salaryMin,
-      salaryMax: parsed.data.salaryMax,
-      conditions: form.conditions
-        .split("\n")
-        .map((c) => c.trim())
-        .filter(Boolean)
-        .slice(0, 6),
-      description: parsed.data.description,
-      email: parsed.data.email,
-      whatsapp: parsed.data.whatsapp,
-    });
-    toast.success("Anuncio publicado", {
-      description: "Ya aparece en el muro de barberías.",
-    });
-    navigate({ to: "/" });
+    setSubmitting(true);
+    try {
+      await addOffer({
+        shopName: parsed.data.shopName,
+        city: form.city,
+        logo: DEFAULT_LOGO,
+        cover: DEFAULT_COVER,
+        lookingFor: parsed.data.lookingFor,
+        specialties,
+        contractType: form.contractType,
+        salaryMin: parsed.data.salaryMin,
+        salaryMax: parsed.data.salaryMax,
+        conditions: form.conditions
+          .split("\n")
+          .map((c) => c.trim())
+          .filter(Boolean)
+          .slice(0, 6),
+        description: parsed.data.description,
+        email: parsed.data.email,
+        whatsapp: parsed.data.whatsapp,
+      });
+      toast.success("Anuncio publicado", {
+        description: "Ya aparece en el muro de barberías.",
+      });
+      navigate({ to: "/" });
+    } catch {
+      toast.error("No se pudo publicar", {
+        description: "Inténtalo de nuevo en unos segundos.",
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const set = (key: keyof typeof form) => (value: string) =>
@@ -317,8 +335,8 @@ function PublishOffer() {
           </div>
         </div>
 
-        <Button type="submit" className="w-full font-semibold sm:w-auto">
-          Publicar anuncio
+        <Button type="submit" disabled={submitting} className="w-full font-semibold sm:w-auto">
+          {submitting ? "Publicando…" : "Publicar anuncio"}
         </Button>
       </form>
     </div>

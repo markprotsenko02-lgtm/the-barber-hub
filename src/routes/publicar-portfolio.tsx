@@ -457,8 +457,8 @@ function PublishPortfolio() {
           )}
         </div>
 
-        <Button type="submit" size="lg" className="w-full font-semibold sm:w-auto">
-          Publicar mi portfolio
+        <Button type="submit" size="lg" disabled={submitting} className="w-full font-semibold sm:w-auto">
+          {submitting ? "Publicando…" : "Publicar mi portfolio"}
         </Button>
       </form>
     </div>
