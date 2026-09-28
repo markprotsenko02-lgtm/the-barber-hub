@@ -28,7 +28,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Muro visual de portfolios de barberos y anuncios de barberías que buscan personal. Filtra por ciudad, especialidad, contrato y salario.",
+          "BarberHub conecta a barberos profesionales con barberías que buscan talento: portfolios visuales, ofertas de empleo y contacto directo en una sola plataforma.",
       },
       { property: "og:title", content: "BarberHub — Talento de barbería en un solo muro" },
       {
@@ -38,6 +38,8 @@ export const Route = createFileRoute("/")({
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:image", content: "https://id-preview--d6a82d4d-e038-4f20-a296-d2a0d482fb96.lovable.app/logo.png" },
+      { name: "twitter:image", content: "https://id-preview--d6a82d4d-e038-4f20-a296-d2a0d482fb96.lovable.app/logo.png" },
     ],
   }),
   component: Home,

@@ -84,12 +84,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "Portfolios de barberos y anuncios de barberías buscando personal, en un solo muro visual.",
+          "BarberHub conecta a barberos profesionales con barberías que buscan talento: portfolios visuales, ofertas de empleo y contacto directo en una sola plataforma.",
       },
       { property: "og:title", content: "BarberHub" },
       {
         property: "og:description",
-        content: "Portfolios de barberos y ofertas de barberías.",
+        content: "La plataforma profesional que conecta barberos con barberías que buscan talento.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

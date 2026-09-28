@@ -16,6 +16,8 @@ import { GalleryGrid } from "@/components/gallery-lightbox";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ContactForm } from "@/components/contact-form";
+import { AuthGate } from "@/components/auth-gate";
+import { ReportButton } from "@/components/report-dialog";
 
 export const Route = createFileRoute("/barberos/$barberId")({
   head: () => ({
@@ -109,7 +111,7 @@ function BarberProfile() {
           ))}
         </div>
 
-        <div className="mt-6 flex flex-wrap gap-2">
+        <AuthGate className="mt-6 flex flex-wrap items-center gap-2">
           <Button asChild className="font-semibold">
             <a href={waLink} target="_blank" rel="noreferrer noopener">
               <MessageCircle className="h-4 w-4" /> Contactar por WhatsApp
@@ -124,7 +126,8 @@ function BarberProfile() {
               <Mail className="h-4 w-4" /> Enviar email
             </a>
           </Button>
-        </div>
+        </AuthGate>
+        <ReportButton className="mt-3" target={{ type: "barbero", id: barber.id, name: barber.name, email: barber.email, whatsapp: barber.whatsapp }} />
 
         <div className="mt-10 grid gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
           <section className="min-w-0 space-y-8">
@@ -187,7 +190,9 @@ function BarberProfile() {
               </dl>
             </div>
 
-            <ContactForm barberName={barber.name} />
+            <AuthGate>
+              <ContactForm barberName={barber.name} />
+            </AuthGate>
           </aside>
         </div>
       </div>
