@@ -28,7 +28,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "BarberHub conecta a barberos profesionales con barberías que buscan talento: portfolios visuales, ofertas de empleo y contacto directo en una sola plataforma.",
+          "BarberHub: portfolios de barberos y ofertas de trabajo de barberías en un solo lugar.",
       },
       { property: "og:title", content: "BarberHub — Talento de barbería en un solo muro" },
       {
