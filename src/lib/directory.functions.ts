@@ -141,7 +141,7 @@ export const updateBarber = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const p = data.patch;
-    const update: Record<string, unknown> = {};
+    const update: Database["public"]["Tables"]["barbers"]["Update"] = {};
     if (p.name !== undefined) update["name"] = p.name;
     if (p.headline !== undefined) update["headline"] = p.headline;
     if (p.city !== undefined) update["city"] = p.city;
