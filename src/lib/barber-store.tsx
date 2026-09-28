@@ -2,8 +2,8 @@ import * as React from "react";
 import { SEED_BARBERS, type Barber, type GalleryItem } from "./barber-data";
 import { SEED_OFFERS, type ShopOffer } from "./shop-data";
 
-const BARBERS_KEY = "barbermatch.barbers.v1";
-const OFFERS_KEY = "barbermatch.offers.v1";
+const BARBERS_KEY = "barbermatch.barbers.v2";
+const OFFERS_KEY = "barbermatch.offers.v2";
 
 type Ctx = {
   barbers: Barber[];
@@ -22,7 +22,7 @@ function load<T>(key: string, fallback: T[]): T[] {
     const raw = window.localStorage.getItem(key);
     if (raw) {
       const parsed = JSON.parse(raw) as T[];
-      if (Array.isArray(parsed) && parsed.length) return parsed;
+      if (Array.isArray(parsed) && parsed.length >= 0) return parsed;
     }
   } catch {
     /* ignore corrupt storage */
