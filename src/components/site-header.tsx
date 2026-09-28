@@ -14,7 +14,7 @@ export function SiteHeader() {
           </span>
           <span className="min-w-0">
             <span className="block truncate font-display text-lg font-semibold uppercase tracking-widest">
-              Barber<span className="text-primary">Match</span>
+              Barber<span className="text-primary">Hub</span>
             </span>
             <span className="hidden text-[11px] uppercase tracking-[0.2em] text-muted-foreground sm:block">
               Portfolios &amp; fichajes
