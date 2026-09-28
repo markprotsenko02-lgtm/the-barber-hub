@@ -45,7 +45,10 @@ export function ReportButton({ target, className }: { target: ReportTarget; clas
   const [busy, setBusy] = React.useState(false);
 
   async function onSend() {
-    if (!reason) return toast.error("Elige un motivo del reporte");
+    if (!reason) {
+      toast.error("Elige un motivo del reporte");
+      return;
+    }
     setBusy(true);
     try {
       await send({ data: { target, reason, details: details.trim() } });
