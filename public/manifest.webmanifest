@@ -1,14 +1,23 @@
 {
+  "id": "/",
   "name": "BarberHub",
   "short_name": "BarberHub",
-  "description": "Portfolios de barberos y ofertas de trabajo de barberías.",
+  "description": "Portfolios de barberos y ofertas de trabajo de barberías en un solo lugar.",
+  "lang": "es",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#0b0b0c",
   "theme_color": "#0b0b0c",
+  "categories": ["business", "lifestyle"],
   "icons": [
-    { "src": "/logo.png", "sizes": "256x256", "type": "image/png", "purpose": "any maskable" }
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Publicar portfolio", "short_name": "Portfolio", "url": "/publicar-portfolio", "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }] },
+    { "name": "Publicar oferta", "short_name": "Oferta", "url": "/publicar-oferta", "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }] }
   ]
 }
