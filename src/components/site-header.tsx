@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Scissors, Store, LogIn, LogOut } from "lucide-react";
+import { Scissors, Store, LogIn, LogOut, Home, User } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 
 export function SiteHeader() {
@@ -82,5 +82,38 @@ export function SiteFooter() {
         </p>
       </div>
     </footer>
+  );
+}
+
+export function BottomNav() {
+  const { user } = useAuth();
+  const items = [
+    { to: "/", label: "Inicio", icon: Home },
+    { to: "/publicar-portfolio", label: "Portfolio", icon: Scissors },
+    { to: "/publicar-oferta", label: "Oferta", icon: Store },
+    user
+      ? { to: "/panel", label: "Mi panel", icon: User }
+      : { to: "/auth", label: "Entrar", icon: LogIn },
+  ] as const;
+  return (
+    <nav
+      className="fixed inset-x-0 bottom-0 z-50 border-t border-border/70 bg-background/95 backdrop-blur-md md:hidden"
+      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+    >
+      <div className="grid grid-cols-4">
+        {items.map(({ to, label, icon: Icon }) => (
+          <Link
+            key={to}
+            to={to}
+            activeOptions={{ exact: to === "/" }}
+            className="flex flex-col items-center gap-1 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground"
+            activeProps={{ className: "text-primary" }}
+          >
+            <Icon className="h-5 w-5" />
+            {label}
+          </Link>
+        ))}
+      </div>
+    </nav>
   );
 }
