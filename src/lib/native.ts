@@ -6,15 +6,18 @@ export type Coords = { lat: number; lng: number };
 
 /** Asks the OS for location permission (native iOS prompt in the app) and returns coords. */
 export async function getCurrentPosition(): Promise<Coords> {
-  if (isNative()) {
-    const { Geolocation } = await import("@capacitor/geolocation");
-    const perm = await Geolocation.checkPermissions().catch(() => null);
-    if (perm?.location !== "granted") {
-      const r = await Geolocation.requestPermissions({ permissions: ["location"] });
-      if (r.location !== "granted") throw Object.assign(new Error("denied"), { code: 1 });
+  if (isNative() && Capacitor.isPluginAvailable("Geolocation")) {
+    try {
+      const { Geolocation } = await import("@capacitor/geolocation");
+      // getCurrentPosition shows the iOS "Allow location?" prompt by itself when needed.
+      const p = await Geolocation.getCurrentPosition({ enableHighAccuracy: false, timeout: 20000 });
+      return { lat: p.coords.latitude, lng: p.coords.longitude };
+    } catch (e) {
+      const msg = String((e as Error)?.message ?? e).toLowerCase();
+      console.warn("native geolocation failed", e);
+      if (msg.includes("denied")) throw Object.assign(new Error("denied"), { code: 1 });
+      // fall through to the web API
     }
-    const p = await Geolocation.getCurrentPosition({ enableHighAccuracy: true, timeout: 20000 });
-    return { lat: p.coords.latitude, lng: p.coords.longitude };
   }
   return new Promise((resolve, reject) => {
     if (typeof navigator === "undefined" || !navigator.geolocation) {
@@ -23,8 +26,11 @@ export async function getCurrentPosition(): Promise<Coords> {
     }
     navigator.geolocation.getCurrentPosition(
       (p) => resolve({ lat: p.coords.latitude, lng: p.coords.longitude }),
-      reject,
-      { enableHighAccuracy: true, timeout: 20000, maximumAge: 60000 },
+      (err) => {
+        console.warn("web geolocation failed", err.code, err.message);
+        reject(err);
+      },
+      { enableHighAccuracy: false, timeout: 20000, maximumAge: 300000 },
     );
   });
 }
