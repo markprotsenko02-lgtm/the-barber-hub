@@ -12,6 +12,7 @@ import {
 } from "@/lib/barber-data";
 import { useBarbers } from "@/lib/barber-store";
 import { useAuth } from "@/hooks/use-auth";
+import { PhotoCapture } from "@/components/photo-capture";
 import { TipsPanel } from "@/components/tips-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -105,6 +106,7 @@ function PublishOffer() {
     salaryMax: "",
     conditions: "",
   });
+  const [photos, setPhotos] = React.useState<string[]>([]);
   const [specialties, setSpecialties] = React.useState<Specialty[]>([]);
   const [errors, setErrors] = React.useState<Record<string, string>>({});
 
@@ -138,8 +140,8 @@ function PublishOffer() {
       await addOffer({
         shopName: parsed.data.shopName,
         city: form.city,
-        logo: DEFAULT_LOGO,
-        cover: DEFAULT_COVER,
+        logo: photos[1] ?? photos[0] ?? DEFAULT_LOGO,
+        cover: photos[0] ?? DEFAULT_COVER,
         lookingFor: parsed.data.lookingFor,
         specialties,
         contractType: form.contractType,
@@ -193,6 +195,21 @@ function PublishOffer() {
       </div>
 
       <form onSubmit={submit} className="mt-8 space-y-5" noValidate>
+        <div className="space-y-3 rounded-xl border border-border/70 bg-card p-4">
+          <p className="font-display text-sm uppercase tracking-wide">Fotos de tu barbería</p>
+          <p className="text-xs text-muted-foreground">La primera será la portada del anuncio y la segunda el logo.</p>
+          <PhotoCapture onUploaded={({ url }) => setPhotos((p) => [...p, url].slice(0, 6))} />
+          {photos.length > 0 && (
+            <ul className="grid grid-cols-3 gap-2">
+              {photos.map((u) => (
+                <li key={u} className="relative overflow-hidden rounded-lg border border-border/70">
+                  <img src={u} alt="Foto de la barbería" className="aspect-square w-full object-cover" />
+                  <button type="button" onClick={() => setPhotos((p) => p.filter((x) => x !== u))} className="absolute right-1 top-1 rounded bg-background/85 px-1.5 text-xs text-destructive">Quitar</button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
         <div className="grid gap-4 rounded-xl border border-border/70 bg-card p-4 sm:grid-cols-2">
           <Field label="Nombre de la barbería" error={errors["shopName"]}>
             <Input

@@ -161,7 +161,8 @@ function BarbersWall({ barbers }: { barbers: ReturnType<typeof useBarbers>["barb
         </Button>
       </div>
 
-      <div className="mt-6 space-y-3 rounded-xl border border-border/70 bg-card/60 p-3 sm:p-4">
+      <NearMeButton onCity={setCity} label="Buscar barberos cerca de mí" what="barberos" />
+      <div className="mt-3 space-y-3 rounded-xl border border-border/70 bg-card/60 p-3 sm:p-4">
         <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2">
           <div className="relative min-w-0">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
