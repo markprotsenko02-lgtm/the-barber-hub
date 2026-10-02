@@ -19,11 +19,11 @@ export function getCurrentPosition(): Promise<GeolocationPosition> {
 
 export async function reverseGeocodeCity(lat: number, lon: number): Promise<string> {
   const res = await fetch(
-    `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=es`,
+    `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}&zoom=10&accept-language=es`,
   );
   if (!res.ok) throw new Error("geocode");
-  const j = (await res.json()) as { city?: string; locality?: string };
-  return j.city || j.locality || "";
+  const j = (await res.json()) as { name?: string; address?: { city?: string; town?: string; village?: string } };
+  return j.address?.city || j.address?.town || j.address?.village || j.name || "";
 }
 
 export type NotifPermission = "granted" | "denied" | "prompt" | "unsupported";
