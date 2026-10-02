@@ -34,7 +34,7 @@ export function NearMeButton({
       const code = (e as GeolocationPositionError)?.code;
       toast.error(
         code === 1
-          ? "Ubicación denegada. Actívala en Ajustes > BarberHub > Ubicación."
+          ? "Ubicación denegada. Actívala en Ajustes > BarberJobs > Ubicación."
           : "No se pudo obtener tu ubicación",
       );
     } finally {

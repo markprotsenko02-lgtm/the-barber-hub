@@ -9,16 +9,16 @@ import { lovable } from "@/integrations/lovable/index";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Acceder o crear cuenta — BarberHub" },
+      { title: "Acceder o crear cuenta — BarberJobs" },
       {
         name: "description",
         content:
-          "Inicia sesión o regístrate en BarberHub con tu nombre, apellidos y correo para publicar tu portfolio u ofertas.",
+          "Inicia sesión o regístrate en BarberJobs con tu nombre, apellidos y correo para publicar tu portfolio u ofertas.",
       },
-      { property: "og:title", content: "Acceder o crear cuenta — BarberHub" },
+      { property: "og:title", content: "Acceder o crear cuenta — BarberJobs" },
       {
         property: "og:description",
-        content: "Entra en BarberHub para gestionar tu portfolio u ofertas de barbería.",
+        content: "Entra en BarberJobs para gestionar tu portfolio u ofertas de barbería.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

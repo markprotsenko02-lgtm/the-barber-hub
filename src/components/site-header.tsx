@@ -14,7 +14,7 @@ export function SiteHeader() {
           </span>
           <span className="min-w-0">
             <span className="block truncate font-display text-lg font-semibold uppercase tracking-widest">
-              Barber<span className="text-primary">Hub</span>
+              Barber<span className="text-primary">Jobs</span>
             </span>
             <span className="hidden text-[11px] uppercase tracking-[0.2em] text-muted-foreground sm:block">
               Portfolios &amp; fichajes
@@ -71,14 +71,14 @@ export function SiteFooter() {
     <footer className="mt-20 border-t border-border/70 bg-surface/40">
       <div className="mx-auto max-w-7xl px-4 py-10 text-sm text-muted-foreground sm:px-6">
         <p className="font-display text-base uppercase tracking-[0.2em] text-foreground">
-          BarberHub
+          BarberJobs
         </p>
         <p className="mt-2 max-w-md">
           El escaparate donde los barberos muestran su trabajo y las barberías
           fichan talento con criterio.
         </p>
         <p className="mt-6 text-xs">
-          Datos de demostración con fines de prueba. © {new Date().getFullYear()} BarberHub.
+          Datos de demostración con fines de prueba. © {new Date().getFullYear()} BarberJobs.
         </p>
       </div>
     </footer>

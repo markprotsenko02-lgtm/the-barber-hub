@@ -25,13 +25,13 @@ import { Slider } from "@/components/ui/slider";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "BarberHub — Portfolios de barberos y ofertas de barberías" },
+      { title: "BarberJobs — Portfolios de barberos y ofertas de barberías" },
       {
         name: "description",
         content:
-          "BarberHub: portfolios de barberos y ofertas de trabajo de barberías en un solo lugar.",
+          "BarberJobs: portfolios de barberos y ofertas de trabajo de barberías en un solo lugar.",
       },
-      { property: "og:title", content: "BarberHub — Talento de barbería en un solo muro" },
+      { property: "og:title", content: "BarberJobs — Talento de barbería en un solo muro" },
       {
         property: "og:description",
         content:

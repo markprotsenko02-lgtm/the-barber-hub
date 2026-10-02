@@ -4,7 +4,7 @@ import type { CapacitorConfig } from "@capacitor/cli";
 // After publishing, replace server.url with the published URL.
 const config: CapacitorConfig = {
   appId: "com.thebarberhub.app",
-  appName: "BarberHub",
+  appName: "BarberJobs",
   webDir: "public",
   backgroundColor: "#0b0b0c",
   server: {
