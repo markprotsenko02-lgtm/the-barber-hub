@@ -73,7 +73,7 @@ export function PhotoCapture({
         <ImageUp className="h-4 w-4" /> Desde galería
       </Button>
       <AlertDialog open={askCamera} onOpenChange={setAskCamera}>
-        <AlertDialogContent className="max-w-sm">
+        <AlertDialogContent className="max-w-sm border-primary/50 bg-card shadow-2xl">
           <AlertDialogHeader>
             <AlertDialogTitle>¿Permitir acceso a la cámara?</AlertDialogTitle>
             <AlertDialogDescription>
