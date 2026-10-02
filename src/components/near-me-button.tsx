@@ -3,6 +3,16 @@ import { LocateFixed, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { CITIES } from "@/lib/barber-data";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { getCurrentPosition, reverseGeocodeCity } from "@/lib/native";
 
 const norm = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
@@ -18,6 +28,7 @@ export function NearMeButton({
   what?: string;
 }) {
   const [busy, setBusy] = React.useState(false);
+  const [ask, setAsk] = React.useState(false);
   async function run() {
     setBusy(true);
     try {
@@ -34,7 +45,7 @@ export function NearMeButton({
       const code = (e as GeolocationPositionError)?.code;
       toast.error(
         code === 1
-          ? "Ubicación denegada. Actívala en Ajustes > BarberJobs > Ubicación."
+          ? "No pudimos acceder a tu ubicación. Pulsa de nuevo y acepta, o elige tu ciudad en los filtros."
           : "No se pudo obtener tu ubicación",
       );
     } finally {
@@ -42,9 +53,27 @@ export function NearMeButton({
     }
   }
   return (
-    <Button type="button" onClick={run} disabled={busy} variant="outline" className="mt-6 w-full border-primary/60 font-semibold text-primary sm:w-auto">
-      {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <LocateFixed className="h-4 w-4" />}
-      {label}
-    </Button>
+    <>
+      <Button type="button" onClick={() => setAsk(true)} disabled={busy} variant="outline" className="mt-6 w-full border-primary/60 font-semibold text-primary sm:w-auto">
+        {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <LocateFixed className="h-4 w-4" />}
+        {label}
+      </Button>
+      <AlertDialog open={ask} onOpenChange={setAsk}>
+        <AlertDialogContent className="max-w-sm border-primary/50 bg-card shadow-2xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Permitir acceso a tu ubicación?</AlertDialogTitle>
+            <AlertDialogDescription>
+              BarberJobs usará tu ubicación solo para mostrarte {what} cerca de ti.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => toast("Ubicación no permitida. Puedes elegir tu ciudad en los filtros.")}>
+              Denegar
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={run}>Aceptar</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }
