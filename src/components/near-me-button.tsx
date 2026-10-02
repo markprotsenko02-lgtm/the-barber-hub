@@ -1,7 +1,6 @@
 import * as React from "react";
 import { LocateFixed, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { CITIES } from "@/lib/barber-data";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
@@ -13,44 +12,49 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { getCurrentPosition, reverseGeocodeCity } from "@/lib/native";
+import { getCurrentPosition, NEAR_RADIUS_KM, type Coords } from "@/lib/native";
 
-const norm = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-
-/** Asks for location permission (system prompt) and filters offers by the user's city. */
+/** Asks for location permission and hands back the user's coordinates (5 km radius filter). */
 export function NearMeButton({
-  onCity,
+  onLocate,
+  active,
+  onClear,
   label = "Buscar barberías cerca de mí",
   what = "barberías",
 }: {
-  onCity: (city: string) => void;
+  onLocate: (c: Coords) => void;
+  active?: boolean;
+  onClear?: () => void;
   label?: string;
   what?: string;
 }) {
   const [busy, setBusy] = React.useState(false);
   const [ask, setAsk] = React.useState(false);
   async function run() {
+    setAsk(false);
     setBusy(true);
     try {
       const pos = await getCurrentPosition();
-      const city = await reverseGeocodeCity(pos.coords.latitude, pos.coords.longitude);
-      const match = (CITIES as readonly string[]).find((c) => norm(c) === norm(city));
-      if (match) {
-        onCity(match);
-        toast.success(`Mostrando ${what} en ${match}`);
-      } else {
-        toast.info(city ? `Estás en ${city}. Aún no hay ${what} de tu ciudad en la lista.` : "No pudimos saber tu ciudad");
-      }
+      onLocate(pos);
+      toast.success(`Mostrando ${what} a menos de ${NEAR_RADIUS_KM} km de ti`);
     } catch (e) {
-      const code = (e as GeolocationPositionError)?.code;
+      const code = (e as { code?: number })?.code;
       toast.error(
         code === 1
           ? "No pudimos acceder a tu ubicación. Pulsa de nuevo y acepta, o elige tu ciudad en los filtros."
-          : "No se pudo obtener tu ubicación",
+          : "No se pudo obtener tu ubicación. Inténtalo de nuevo.",
       );
     } finally {
       setBusy(false);
     }
+  }
+  if (active) {
+    return (
+      <Button type="button" onClick={onClear} variant="outline" className="mt-6 w-full border-primary font-semibold text-primary sm:w-auto">
+        <LocateFixed className="h-4 w-4" />
+        Cerca de ti ({NEAR_RADIUS_KM} km) · Quitar
+      </Button>
+    );
   }
   return (
     <>
