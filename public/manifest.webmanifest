@@ -1,7 +1,7 @@
 {
   "id": "/",
-  "name": "BarberHub",
-  "short_name": "BarberHub",
+  "name": "BarberJobs",
+  "short_name": "BarberJobs",
   "description": "Portfolios de barberos y ofertas de trabajo de barberías en un solo lugar.",
   "lang": "es",
   "start_url": "/",

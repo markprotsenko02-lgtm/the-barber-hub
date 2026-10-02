@@ -77,7 +77,7 @@ export function PhotoCapture({
           <AlertDialogHeader>
             <AlertDialogTitle>¿Permitir acceso a la cámara?</AlertDialogTitle>
             <AlertDialogDescription>
-              BarberHub necesita usar tu cámara para hacer fotos en vivo de tus cortes. Puedes cambiarlo cuando quieras en Ajustes › BarberHub › Cámara.
+              BarberJobs necesita usar tu cámara para hacer fotos en vivo de tus cortes. Puedes cambiarlo cuando quieras en Ajustes › BarberJobs › Cámara.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

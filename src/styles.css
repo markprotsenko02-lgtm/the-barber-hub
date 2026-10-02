@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * BarberHub design system — dark, urban, warm metallic accents.
+ * BarberJobs design system — dark, urban, warm metallic accents.
  * All color tokens live on :root (the app is dark-first) and are mapped to
  * Tailwind utilities in @theme inline. Colors use oklch.
  */

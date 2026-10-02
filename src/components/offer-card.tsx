@@ -77,7 +77,7 @@ export function OfferCard({ offer }: { offer: ShopOffer }) {
             <Button asChild size="sm" className="font-semibold">
               <a
                 href={`https://wa.me/${offer.whatsapp}?text=${encodeURIComponent(
-                  `Hola ${offer.shopName}, os escribo por la oferta publicada en BarberHub.`,
+                  `Hola ${offer.shopName}, os escribo por la oferta publicada en BarberJobs.`,
                 )}`}
                 target="_blank"
                 rel="noreferrer noopener"
@@ -86,7 +86,7 @@ export function OfferCard({ offer }: { offer: ShopOffer }) {
               </a>
             </Button>
             <Button asChild size="sm" variant="outline">
-              <a href={`mailto:${offer.email}?subject=${encodeURIComponent("Candidatura BarberHub")}`}>
+              <a href={`mailto:${offer.email}?subject=${encodeURIComponent("Candidatura BarberJobs")}`}>
                 <Mail className="h-4 w-4" /> Email
               </a>
             </Button>

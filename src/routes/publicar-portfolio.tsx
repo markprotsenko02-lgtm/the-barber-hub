@@ -31,13 +31,13 @@ import {
 export const Route = createFileRoute("/publicar-portfolio")({
   head: () => ({
     meta: [
-      { title: "Publicar mi portfolio de barbero — BarberHub" },
+      { title: "Publicar mi portfolio de barbero — BarberJobs" },
       {
         name: "description",
         content:
           "Consejos para un portfolio de éxito y formulario guiado para publicar tus fotos, vídeos, especialidades, formación y expectativas laborales.",
       },
-      { property: "og:title", content: "Publicar mi portfolio de barbero — BarberHub" },
+      { property: "og:title", content: "Publicar mi portfolio de barbero — BarberJobs" },
       {
         property: "og:description",
         content: "Muestra tus mejores cortes y deja claras tus condiciones laborales.",

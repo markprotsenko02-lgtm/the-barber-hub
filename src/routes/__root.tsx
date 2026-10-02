@@ -85,14 +85,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
-      { name: "apple-mobile-web-app-title", content: "BarberHub" },
-      { title: "BarberHub — Portfolios y fichajes de barbería" },
+      { name: "apple-mobile-web-app-title", content: "BarberJobs" },
+      { title: "BarberJobs — Portfolios y fichajes de barbería" },
       {
         name: "description",
         content:
-          "BarberHub: portfolios de barberos y ofertas de trabajo de barberías en un solo lugar.",
+          "BarberJobs: portfolios de barberos y ofertas de trabajo de barberías en un solo lugar.",
       },
-      { property: "og:title", content: "BarberHub" },
+      { property: "og:title", content: "BarberJobs" },
       {
         property: "og:description",
         content: "La plataforma profesional que conecta barberos con barberías que buscan talento.",

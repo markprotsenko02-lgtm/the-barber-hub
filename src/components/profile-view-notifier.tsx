@@ -23,7 +23,7 @@ export function ProfileViewNotifier() {
         { event: "INSERT", schema: "public", table: "profile_views", filter: `owner_id=eq.${user.id}` },
         (payload) => {
           const name = (payload.new as { viewer_name?: string }).viewer_name || "Alguien";
-          const body = `${name} ha visto tu perfil en BarberHub`;
+          const body = `${name} ha visto tu perfil en BarberJobs`;
           toast(body);
           void showNotification("Nueva visita a tu perfil", body);
         },
@@ -51,7 +51,7 @@ export function NotificationToggle() {
           {perm === "granted"
             ? "Activadas: te avisaremos cuando alguien con cuenta vea tu perfil."
             : perm === "denied"
-              ? "Bloqueadas. Actívalas en Ajustes > BarberHub > Notificaciones."
+              ? "Bloqueadas. Actívalas en Ajustes > BarberJobs > Notificaciones."
               : "Recibe un aviso cuando alguien con cuenta vea tu perfil."}
         </p>
       </div>
