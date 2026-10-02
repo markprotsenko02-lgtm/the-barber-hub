@@ -8,6 +8,7 @@ import {
   SPECIALTIES,
 } from "@/lib/barber-data";
 import { useBarbers } from "@/lib/barber-store";
+import { NearMeButton } from "@/components/near-me-button";
 import { BarberCard } from "@/components/barber-card";
 import { OfferCard } from "@/components/offer-card";
 import { Button } from "@/components/ui/button";
@@ -267,7 +268,8 @@ function OffersWall({ offers }: { offers: ReturnType<typeof useBarbers>["offers"
         </Button>
       </div>
 
-      <div className="mt-6 grid gap-3 rounded-xl border border-border/70 bg-card/60 p-3 sm:grid-cols-3 sm:p-4">
+      <NearMeButton onCity={setCity} />
+      <div className="mt-3 grid gap-3 rounded-xl border border-border/70 bg-card/60 p-3 sm:grid-cols-3 sm:p-4">
         <FilterSelect label="Ciudad" value={city} onChange={setCity} options={CITIES} />
         <FilterSelect
           label="Tipo de contrato"

@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { LogIn, UserPlus, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
+import { lovable } from "@/integrations/lovable/index";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -114,6 +115,17 @@ function AuthPage() {
     }
   }
 
+  async function oauth(provider: "google" | "apple") {
+    const result = await lovable.auth.signInWithOAuth(provider, { redirect_uri: window.location.origin });
+    if (result.error) {
+      toast.error("No se pudo iniciar sesión");
+      return;
+    }
+    if (result.redirected) return;
+    toast.success("Sesión iniciada");
+    navigate({ to: "/" });
+  }
+
   if (!loading && user) {
     return (
       <main className="mx-auto max-w-md px-4 py-16 sm:px-6">
@@ -195,6 +207,16 @@ function AuthPage() {
         >
           <LogIn className="h-4 w-4" /> Entrar
         </button>
+      </div>
+
+      <div className="mt-4 grid gap-2">
+        <button type="button" onClick={() => oauth("google")} className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-foreground px-4 py-3 text-sm font-semibold text-background">
+          <span className="font-bold">G</span> Continuar con Google
+        </button>
+        <button type="button" onClick={() => oauth("apple")} className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-background px-4 py-3 text-sm font-semibold text-foreground">
+          <span aria-hidden></span> Continuar con Apple
+        </button>
+        <p className="text-center text-xs text-muted-foreground">o con tu correo</p>
       </div>
 
       <form onSubmit={onSubmit} className="surface-panel mt-4 space-y-4 rounded-2xl p-5">

@@ -83,6 +83,41 @@ export type Database = {
         }
         Relationships: []
       }
+      profile_views: {
+        Row: {
+          barber_id: string
+          created_at: string
+          id: string
+          owner_id: string
+          viewer_id: string
+          viewer_name: string
+        }
+        Insert: {
+          barber_id: string
+          created_at?: string
+          id?: string
+          owner_id?: string
+          viewer_id?: string
+          viewer_name?: string
+        }
+        Update: {
+          barber_id?: string
+          created_at?: string
+          id?: string
+          owner_id?: string
+          viewer_id?: string
+          viewer_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profile_views_barber_id_fkey"
+            columns: ["barber_id"]
+            isOneToOne: false
+            referencedRelation: "barbers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string

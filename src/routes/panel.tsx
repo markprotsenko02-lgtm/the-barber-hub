@@ -15,6 +15,8 @@ import {
 } from "@/lib/barber-data";
 import { useBarbers, useMyBarber } from "@/lib/barber-store";
 import { useAuth } from "@/hooks/use-auth";
+import { PhotoCapture } from "@/components/photo-capture";
+import { NotificationToggle } from "@/components/profile-view-notifier";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -397,7 +399,15 @@ function PanelEditor({ barber }: { barber: Barber }) {
       </section>
 
       <section className="mt-6 space-y-4 rounded-xl border border-border/70 bg-card p-4">
+        <NotificationToggle />
         <h2 className="font-display text-xl uppercase tracking-wide">Galería de trabajos</h2>
+        <PhotoCapture
+          onUploaded={async ({ url, type }) => {
+            const caption = media.caption.trim() || "Trabajo";
+            await addGalleryItem(barber.id, { type, url, caption });
+            setDraft((d) => ({ ...d, gallery: [{ id: `g-${Date.now().toString(36)}`, type, url, caption }, ...d.gallery] }));
+          }}
+        />
         <form onSubmit={addMedia} className="grid gap-2 sm:grid-cols-[130px_minmax(0,1fr)]" noValidate>
           <Select
             value={media.type}

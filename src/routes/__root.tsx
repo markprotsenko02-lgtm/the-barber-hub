@@ -14,6 +14,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteHeader, SiteFooter, BottomNav } from "@/components/site-header";
 import { Toaster } from "@/components/ui/sonner";
+import { ProfileViewNotifier } from "@/components/profile-view-notifier";
 
 function NotFoundComponent() {
   return (
@@ -149,6 +150,7 @@ function RootComponent() {
         <BottomNav />
       </div>
       <Toaster position="top-center" />
+      <ProfileViewNotifier />
     </QueryClientProvider>
   );
 }
