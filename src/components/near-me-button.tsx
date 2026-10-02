@@ -39,6 +39,15 @@ export function NearMeButton({
       toast.success(`Mostrando ${what} a menos de ${NEAR_RADIUS_KM} km de ti`);
     } catch (e) {
       const code = (e as { code?: number })?.code;
+      const embedded = typeof window !== "undefined" && window.top !== window;
+      if (code === 1 && embedded) {
+        // Inside an embedded frame (e.g. editor preview) the browser blocks location without asking.
+        toast.error("Aquí la ubicación está bloqueada. Abre BarberJobs en una pestaña para que te pregunte.", {
+          action: { label: "Abrir", onClick: () => window.open(window.location.href, "_blank", "noopener") },
+          duration: 10000,
+        });
+        return;
+      }
       toast.error(
         code === 1
           ? "No pudimos acceder a tu ubicación. Pulsa de nuevo y acepta, o elige tu ciudad en los filtros."
