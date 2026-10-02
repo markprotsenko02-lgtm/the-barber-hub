@@ -8,7 +8,15 @@ import { getCurrentPosition, reverseGeocodeCity } from "@/lib/native";
 const norm = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
 /** Asks for location permission (system prompt) and filters offers by the user's city. */
-export function NearMeButton({ onCity }: { onCity: (city: string) => void }) {
+export function NearMeButton({
+  onCity,
+  label = "Buscar barberías cerca de mí",
+  what = "barberías",
+}: {
+  onCity: (city: string) => void;
+  label?: string;
+  what?: string;
+}) {
   const [busy, setBusy] = React.useState(false);
   async function run() {
     setBusy(true);
@@ -18,9 +26,9 @@ export function NearMeButton({ onCity }: { onCity: (city: string) => void }) {
       const match = (CITIES as readonly string[]).find((c) => norm(c) === norm(city));
       if (match) {
         onCity(match);
-        toast.success(`Mostrando barberías en ${match}`);
+        toast.success(`Mostrando ${what} en ${match}`);
       } else {
-        toast.info(city ? `Estás en ${city}. Aún no hay barberías de tu ciudad en la lista.` : "No pudimos saber tu ciudad");
+        toast.info(city ? `Estás en ${city}. Aún no hay ${what} de tu ciudad en la lista.` : "No pudimos saber tu ciudad");
       }
     } catch (e) {
       const code = (e as GeolocationPositionError)?.code;
@@ -36,7 +44,7 @@ export function NearMeButton({ onCity }: { onCity: (city: string) => void }) {
   return (
     <Button type="button" onClick={run} disabled={busy} variant="outline" className="mt-6 w-full border-primary/60 font-semibold text-primary sm:w-auto">
       {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <LocateFixed className="h-4 w-4" />}
-      Buscar barberías cerca de mí
+      {label}
     </Button>
   );
 }
