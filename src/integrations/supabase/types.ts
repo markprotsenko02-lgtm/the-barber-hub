@@ -96,7 +96,7 @@ export type Database = {
           barber_id: string
           created_at?: string
           id?: string
-          owner_id: string
+          owner_id?: string
           viewer_id?: string
           viewer_name?: string
         }

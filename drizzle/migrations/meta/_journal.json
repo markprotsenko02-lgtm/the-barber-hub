@@ -29,6 +29,13 @@
       "when": 1790939838155,
       "tag": "0003_portfolio_photos_and_profile_views",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1790939862523,
+      "tag": "0004_profile_views_owner_trigger",
+      "breakpoints": true
     }
   ]
 }
