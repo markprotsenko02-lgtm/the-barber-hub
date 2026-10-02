@@ -78,7 +78,7 @@ export function SiteFooter() {
           fichan talento con criterio.
         </p>
         <p className="mt-6 text-xs">
-          Datos de demostración con fines de prueba. © {new Date().getFullYear()} BarberJobs.
+          © {new Date().getFullYear()} BarberJobs.
         </p>
       </div>
     </footer>
