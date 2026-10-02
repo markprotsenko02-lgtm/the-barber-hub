@@ -8,8 +8,7 @@ const config: CapacitorConfig = {
   webDir: "public",
   backgroundColor: "#0b0b0c",
   server: {
-    url: "https://id-preview--d6a82d4d-e038-4f20-a296-d2a0d482fb96.lovable.app?forceHideBadge=true",
-    cleartext: true,
+    url: "https://trim-talent-find.lovable.app",
   },
   ios: { contentInset: "always" },
 };
