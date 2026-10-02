@@ -1,3 +1,4 @@
+import { listOffers } from "@/lib/directory.functions";
 import * as React from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Scissors, Store, Search, SlidersHorizontal, X } from "lucide-react";
@@ -23,13 +24,13 @@ import {
 import { Slider } from "@/components/ui/slider";
 
 export const Route = createFileRoute("/")({
-  head: () => ({
+  head: ({ loaderData }) => ({
     meta: [
       { title: "BarberJobs — Portfolios de barberos y ofertas de barberías" },
       {
         name: "description",
         content:
-          "BarberJobs: portfolios de barberos y ofertas de trabajo de barberías en un solo lugar.",
+          "Encuentra barberos por ciudad y especialidad o consulta ofertas de trabajo de barberías en España. Publica tu portfolio o tu vacante gratis.",
       },
       { property: "og:title", content: "BarberJobs — Talento de barbería en un solo muro" },
       {
@@ -41,8 +42,48 @@ export const Route = createFileRoute("/")({
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:image", content: "https://trim-talent-find.lovable.app/logo.png" },
       { name: "twitter:image", content: "https://trim-talent-find.lovable.app/logo.png" },
+      { property: "og:url", content: "https://trim-talent-find.lovable.app/" },
     ],
+    links: [{ rel: "canonical", href: "https://trim-talent-find.lovable.app/" }],
+    scripts: (loaderData?.offers ?? []).length
+      ? [
+          {
+            type: "application/ld+json",
+            children: JSON.stringify(
+              (loaderData?.offers ?? []).map((o) => ({
+                "@context": "https://schema.org",
+                "@type": "JobPosting",
+                title: o.looking_for || `Barbero en ${o.shop_name}`,
+                description: o.description || o.looking_for || `Oferta de trabajo para barbero en ${o.shop_name}`,
+                datePosted: o.created_at,
+                employmentType: o.contract_type,
+                hiringOrganization: { "@type": "Organization", name: o.shop_name },
+                jobLocation: {
+                  "@type": "Place",
+                  address: { "@type": "PostalAddress", addressLocality: o.city, addressCountry: "ES" },
+                },
+                ...(o.salary_max
+                  ? {
+                      baseSalary: {
+                        "@type": "MonetaryAmount",
+                        currency: "EUR",
+                        value: { "@type": "QuantitativeValue", minValue: o.salary_min, maxValue: o.salary_max, unitText: "MONTH" },
+                      },
+                    }
+                  : {}),
+              })),
+            ),
+          },
+        ]
+      : [],
   }),
+  loader: async () => {
+    try {
+      return { offers: await listOffers() };
+    } catch {
+      return { offers: [] };
+    }
+  },
   component: Home,
 });
 
@@ -178,6 +219,7 @@ function BarbersWall({ barbers }: { barbers: ReturnType<typeof useBarbers>["barb
             variant="outline"
             onClick={() => setShowFilters((v) => !v)}
             className="shrink-0"
+            aria-label="Filtros"
           >
             <SlidersHorizontal className="h-4 w-4" />
             <span className="hidden sm:inline">Filtros</span>

@@ -90,7 +90,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "BarberJobs: portfolios de barberos y ofertas de trabajo de barberías en un solo lugar.",
+          "BarberJobs, la plataforma que conecta barberos con barberías que buscan talento.",
       },
       { property: "og:title", content: "BarberJobs" },
       {

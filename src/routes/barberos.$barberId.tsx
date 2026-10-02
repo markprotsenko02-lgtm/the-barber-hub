@@ -14,6 +14,7 @@ import {
   Instagram,
 } from "lucide-react";
 import { useBarbers } from "@/lib/barber-store";
+import { getBarberSeo } from "@/lib/directory.functions";
 import { GalleryGrid } from "@/components/gallery-lightbox";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -22,23 +23,35 @@ import { AuthGate } from "@/components/auth-gate";
 import { ReportButton } from "@/components/report-dialog";
 
 export const Route = createFileRoute("/barberos/$barberId")({
-  head: () => ({
-    meta: [
-      { title: "Perfil de barbero — BarberJobs" },
-      {
-        name: "description",
-        content:
-          "Portfolio del barbero: galería de cortes, formación, disponibilidad, tipo de contrato y salario esperado.",
-      },
-      { property: "og:title", content: "Perfil de barbero — BarberJobs" },
-      {
-        property: "og:description",
-        content: "Galería de trabajos, formación y condiciones laborales del barbero.",
-      },
-      { property: "og:type", content: "profile" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  loader: async ({ params }) => {
+    try {
+      return { seo: await getBarberSeo({ data: { id: params.barberId } }) };
+    } catch {
+      return { seo: null };
+    }
+  },
+  head: ({ params, loaderData }) => {
+    const b = loaderData?.seo;
+    const url = `https://trim-talent-find.lovable.app/barberos/${params.barberId}`;
+    const title = b ? `${b.name} — Barbero en ${b.city || "España"} | BarberJobs` : "Perfil de barbero — BarberJobs";
+    const desc = b
+      ? `${b.name}${b.headline ? `, ${b.headline}` : ""}. ${b.experience_years} años de experiencia en ${b.city || "España"}. Mira su portfolio de cortes en BarberJobs.`.slice(0, 160)
+      : "Portfolio de barbero en BarberJobs: galería de cortes, formación y condiciones laborales.";
+    const img = b && /^https:\/\//.test(b.cover || b.avatar) ? b.cover || b.avatar : null;
+    return {
+      meta: [
+        { title },
+        { name: "description", content: desc },
+        { property: "og:title", content: title },
+        { property: "og:description", content: desc },
+        { property: "og:type", content: "profile" },
+        { property: "og:url", content: url },
+        { name: "twitter:card", content: "summary_large_image" },
+        ...(img ? [{ property: "og:image", content: img }, { name: "twitter:image", content: img }] : []),
+      ],
+      links: [{ rel: "canonical", href: url }],
+    };
+  },
   component: BarberProfile,
 });
 
