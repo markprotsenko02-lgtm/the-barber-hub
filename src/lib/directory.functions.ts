@@ -197,3 +197,14 @@ export const createOffer = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return row;
   });
+
+export const getBarberSeo = createServerFn({ method: "GET" })
+  .inputValidator((d) => z.object({ id: z.string().uuid() }).parse(d))
+  .handler(async ({ data }) => {
+    const { data: row } = await publicClient()
+      .from("barbers")
+      .select("name, headline, city, experience_years, cover, avatar")
+      .eq("id", data.id)
+      .maybeSingle();
+    return row ?? null;
+  });
