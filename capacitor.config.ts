@@ -9,6 +9,7 @@ const config: CapacitorConfig = {
   backgroundColor: "#0b0b0c",
   server: {
     url: "https://trim-talent-find.lovable.app?forceHideBadge=true",
+    allowNavigation: ["trim-talent-find.lovable.app"],
   },
   ios: { contentInset: "always" },
 };
