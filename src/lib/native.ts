@@ -2,19 +2,60 @@ import { Capacitor } from "@capacitor/core";
 
 export const isNative = () => typeof window !== "undefined" && Capacitor.isNativePlatform();
 
-/** Asks the OS for location permission (system prompt) and returns coords. */
-export function getCurrentPosition(): Promise<GeolocationPosition> {
+export type Coords = { lat: number; lng: number };
+
+/** Asks the OS for location permission (native iOS prompt in the app) and returns coords. */
+export async function getCurrentPosition(): Promise<Coords> {
+  if (isNative()) {
+    const { Geolocation } = await import("@capacitor/geolocation");
+    const perm = await Geolocation.checkPermissions().catch(() => null);
+    if (perm?.location !== "granted") {
+      const r = await Geolocation.requestPermissions({ permissions: ["location"] });
+      if (r.location !== "granted") throw Object.assign(new Error("denied"), { code: 1 });
+    }
+    const p = await Geolocation.getCurrentPosition({ enableHighAccuracy: true, timeout: 20000 });
+    return { lat: p.coords.latitude, lng: p.coords.longitude };
+  }
   return new Promise((resolve, reject) => {
     if (typeof navigator === "undefined" || !navigator.geolocation) {
       reject(new Error("unsupported"));
       return;
     }
-    navigator.geolocation.getCurrentPosition(resolve, reject, {
-      enableHighAccuracy: false,
-      timeout: 15000,
-      maximumAge: 60000,
-    });
+    navigator.geolocation.getCurrentPosition(
+      (p) => resolve({ lat: p.coords.latitude, lng: p.coords.longitude }),
+      reject,
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 60000 },
+    );
   });
+}
+
+/** Centre coordinates of the supported cities. */
+export const CITY_COORDS: Record<string, Coords> = {
+  Madrid: { lat: 40.4168, lng: -3.7038 },
+  Barcelona: { lat: 41.3874, lng: 2.1686 },
+  Valencia: { lat: 39.4699, lng: -0.3763 },
+  Sevilla: { lat: 37.3891, lng: -5.9845 },
+  Bilbao: { lat: 43.263, lng: -2.935 },
+  Málaga: { lat: 36.7213, lng: -4.4214 },
+  Zaragoza: { lat: 41.6488, lng: -0.8891 },
+};
+
+export function distanceKm(a: Coords, b: Coords) {
+  const R = 6371;
+  const dLat = ((b.lat - a.lat) * Math.PI) / 180;
+  const dLng = ((b.lng - a.lng) * Math.PI) / 180;
+  const h =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos((a.lat * Math.PI) / 180) * Math.cos((b.lat * Math.PI) / 180) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+
+export const NEAR_RADIUS_KM = 5;
+
+/** True when the listing's city is within the near-me radius of the user. */
+export function isNear(user: Coords, city: string) {
+  const c = CITY_COORDS[city];
+  return !!c && distanceKm(user, c) <= NEAR_RADIUS_KM;
 }
 
 export async function reverseGeocodeCity(lat: number, lon: number): Promise<string> {

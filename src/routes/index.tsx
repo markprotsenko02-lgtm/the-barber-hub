@@ -10,6 +10,7 @@ import {
 } from "@/lib/barber-data";
 import { useBarbers } from "@/lib/barber-store";
 import { NearMeButton } from "@/components/near-me-button";
+import { isNear, type Coords } from "@/lib/native";
 import { BarberCard } from "@/components/barber-card";
 import { OfferCard } from "@/components/offer-card";
 import { Button } from "@/components/ui/button";
@@ -165,11 +166,13 @@ function BarbersWall({ barbers }: { barbers: ReturnType<typeof useBarbers>["barb
   const [availability, setAvailability] = React.useState(ALL);
   const [maxSalary, setMaxSalary] = React.useState(3000);
   const [showFilters, setShowFilters] = React.useState(false);
+  const [near, setNear] = React.useState<Coords | null>(null);
 
   const filtered = barbers.filter((b) => {
     const q = query.trim().toLowerCase();
     if (q && !`${b.name} ${b.headline} ${b.city}`.toLowerCase().includes(q)) return false;
     if (city !== ALL && b.city !== city) return false;
+    if (near && !isNear(near, b.city)) return false;
     if (specialty !== ALL && !b.specialties.includes(specialty as never)) return false;
     if (contract !== ALL && !b.contractTypes.includes(contract as never)) return false;
     if (availability !== ALL && b.availability !== availability) return false;
@@ -180,6 +183,7 @@ function BarbersWall({ barbers }: { barbers: ReturnType<typeof useBarbers>["barb
   const clear = () => {
     setQuery("");
     setCity(ALL);
+    setNear(null);
     setSpecialty(ALL);
     setContract(ALL);
     setAvailability(ALL);
@@ -202,7 +206,7 @@ function BarbersWall({ barbers }: { barbers: ReturnType<typeof useBarbers>["barb
         </Button>
       </div>
 
-      <NearMeButton onCity={setCity} label="Buscar barberos cerca de mí" what="barberos" />
+      <NearMeButton onLocate={setNear} active={!!near} onClear={() => setNear(null)} label="Buscar barberos cerca de mí" what="barberos" />
       <div className="mt-3 space-y-3 rounded-xl border border-border/70 bg-card/60 p-3 sm:p-4">
         <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2">
           <div className="relative min-w-0">
@@ -287,9 +291,11 @@ function OffersWall({ offers }: { offers: ReturnType<typeof useBarbers>["offers"
   const [city, setCity] = React.useState(ALL);
   const [contract, setContract] = React.useState(ALL);
   const [specialty, setSpecialty] = React.useState(ALL);
+  const [near, setNear] = React.useState<Coords | null>(null);
 
   const filtered = offers.filter((o) => {
     if (city !== ALL && o.city !== city) return false;
+    if (near && !isNear(near, o.city)) return false;
     if (contract !== ALL && o.contractType !== contract) return false;
     if (specialty !== ALL && !o.specialties.includes(specialty as never)) return false;
     return true;
@@ -311,7 +317,7 @@ function OffersWall({ offers }: { offers: ReturnType<typeof useBarbers>["offers"
         </Button>
       </div>
 
-      <NearMeButton onCity={setCity} />
+      <NearMeButton onLocate={setNear} active={!!near} onClear={() => setNear(null)} />
       <div className="mt-3 grid gap-3 rounded-xl border border-border/70 bg-card/60 p-3 sm:grid-cols-3 sm:p-4">
         <FilterSelect label="Ciudad" value={city} onChange={setCity} options={CITIES} />
         <FilterSelect
