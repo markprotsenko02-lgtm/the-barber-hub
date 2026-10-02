@@ -32,7 +32,7 @@ export const Route = createFileRoute("/barberos/$barberId")({
   },
   head: ({ params, loaderData }) => {
     const b = loaderData?.seo;
-    const url = `https://trim-talent-find.lovable.app/barberos/${params.barberId}`;
+    const url = `https://barberjobs.es/barberos/${params.barberId}`;
     const title = b ? `${b.name} — Barbero en ${b.city || "España"} | BarberJobs` : "Perfil de barbero — BarberJobs";
     const desc = b
       ? `${b.name}${b.headline ? `, ${b.headline}` : ""}. ${b.experience_years} años de experiencia en ${b.city || "España"}. Mira su portfolio de cortes en BarberJobs.`.slice(0, 160)

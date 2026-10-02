@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://trim-talent-find.lovable.app/sitemap.xml
+Sitemap: https://barberjobs.es/sitemap.xml

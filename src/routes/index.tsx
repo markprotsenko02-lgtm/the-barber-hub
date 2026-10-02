@@ -41,11 +41,11 @@ export const Route = createFileRoute("/")({
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { property: "og:image", content: "https://trim-talent-find.lovable.app/logo.png" },
-      { name: "twitter:image", content: "https://trim-talent-find.lovable.app/logo.png" },
-      { property: "og:url", content: "https://trim-talent-find.lovable.app/" },
+      { property: "og:image", content: "https://barberjobs.es/logo.png" },
+      { name: "twitter:image", content: "https://barberjobs.es/logo.png" },
+      { property: "og:url", content: "https://barberjobs.es/" },
     ],
-    links: [{ rel: "canonical", href: "https://trim-talent-find.lovable.app/" }],
+    links: [{ rel: "canonical", href: "https://barberjobs.es/" }],
     scripts: (loaderData?.offers ?? []).length
       ? [
           {
