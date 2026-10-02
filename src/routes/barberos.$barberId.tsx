@@ -1,4 +1,6 @@
-import type * as React from "react";
+import * as React from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/use-auth";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ArrowLeft,
@@ -44,6 +46,16 @@ function BarberProfile() {
   const { barberId } = Route.useParams();
   const { barbers } = useBarbers();
   const barber = barbers.find((b) => b.id === barberId);
+  const { user } = useAuth();
+  const logged = React.useRef(false);
+  React.useEffect(() => {
+    if (!user || !barber || logged.current) return;
+    logged.current = true;
+    const meta = user.user_metadata as { first_name?: string; last_name?: string; full_name?: string };
+    const viewerName = meta.full_name || [meta.first_name, meta.last_name].filter(Boolean).join(" ") || "Un usuario";
+    // RLS rejects self-views silently.
+    void supabase.from("profile_views").insert({ barber_id: barber.id, viewer_name: viewerName });
+  }, [user, barber]);
 
   if (!barber) {
     return (

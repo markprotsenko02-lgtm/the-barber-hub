@@ -15,6 +15,7 @@ import {
 } from "@/lib/barber-data";
 import { useBarbers } from "@/lib/barber-store";
 import { useAuth } from "@/hooks/use-auth";
+import { PhotoCapture } from "@/components/photo-capture";
 import { TipsPanel } from "@/components/tips-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -399,6 +400,16 @@ function PublishPortfolio() {
 
         <div className="space-y-4 rounded-xl border border-border/70 bg-card p-4">
           <Field label="Galería de fotos y vídeos" error={errors["gallery"]}>
+            <div className="mb-2">
+              <PhotoCapture
+                onUploaded={({ url, type }) =>
+                  setGallery((g) => [
+                    { id: `g-${Date.now().toString(36)}`, type, url, caption: media.caption.trim() || "Trabajo" },
+                    ...g,
+                  ])
+                }
+              />
+            </div>
             <div className="grid gap-2 sm:grid-cols-[120px_minmax(0,1fr)_minmax(0,1fr)_auto]">
               <Select
                 value={media.type}
