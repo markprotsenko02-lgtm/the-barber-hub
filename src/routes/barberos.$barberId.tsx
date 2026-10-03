@@ -117,7 +117,7 @@ function BarberProfile() {
               <span className="flex items-center gap-1">
                 <MapPin className="h-3.5 w-3.5" /> {barber.city}
               </span>
-              <span>{barber.experienceYears} años de experiencia</span>
+              {barber.experienceYears > 0 && <span>{barber.experienceYears} años de experiencia</span>}
               {barber.instagram && (
                 <span className="flex items-center gap-1">
                   <Instagram className="h-3.5 w-3.5" /> {barber.instagram}
@@ -185,11 +185,14 @@ function BarberProfile() {
               <GalleryGrid items={barber.gallery} />
             </div>
 
-            <div>
-              <h2 className="mb-3 font-display text-xl uppercase tracking-wide">Sobre mí</h2>
-              <p className="text-sm leading-relaxed text-muted-foreground">{barber.bio}</p>
-            </div>
+            {barber.bio && (
+              <div>
+                <h2 className="mb-3 font-display text-xl uppercase tracking-wide">Sobre mí</h2>
+                <p className="text-sm leading-relaxed text-muted-foreground">{barber.bio}</p>
+              </div>
+            )}
 
+            {barber.education.length > 0 && (
             <div>
               <h2 className="mb-3 font-display text-xl uppercase tracking-wide">
                 Formación y certificaciones
@@ -211,6 +214,7 @@ function BarberProfile() {
                 ))}
               </ul>
             </div>
+            )}
           </section>
 
           <aside className="min-w-0 space-y-6">
@@ -228,9 +232,11 @@ function BarberProfile() {
                 >
                   {barber.contractTypes.join(", ")}
                 </Row>
-                <Row icon={<Wallet className="h-4 w-4 text-primary" />} label="Salario esperado">
-                  {barber.salaryMin}–{barber.salaryMax} €/mes
-                </Row>
+                {barber.salaryMax > 0 && (
+                  <Row icon={<Wallet className="h-4 w-4 text-primary" />} label="Salario esperado">
+                    {barber.salaryMin}–{barber.salaryMax} €/mes
+                  </Row>
+                )}
                 <Row icon={<MapPin className="h-4 w-4 text-primary" />} label="Ciudad">
                   {barber.city}
                 </Row>
