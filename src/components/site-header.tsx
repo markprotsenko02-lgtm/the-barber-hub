@@ -35,7 +35,8 @@ export function SiteHeader() {
           >
             <Store className="h-3.5 w-3.5 shrink-0 sm:h-4 sm:w-4" />
             <span className="whitespace-nowrap">
-              Soy Barbería <span className="hidden sm:inline">• Buscar Barbero</span>
+              <span className="hidden sm:inline">Soy </span>Barbería{" "}
+              <span className="hidden sm:inline">• Buscar Barbero</span>
             </span>
           </Link>
           {user ? (
