@@ -76,6 +76,7 @@ export function OfferCard({ offer }: { offer: ShopOffer }) {
               </span>
             )}
           </div>
+          <div className="flex flex-wrap items-center gap-2">
           <WhatsAppLink
             phone={offer.whatsapp}
             message={`Hola ${offer.shopName}, os escribo por la oferta publicada en BarberJobs.`}
@@ -89,6 +90,7 @@ export function OfferCard({ offer }: { offer: ShopOffer }) {
               </Button>
             </AuthGate>
           )}
+          </div>
           <ReportButton target={{ type: "barbería", id: offer.id, name: offer.shopName, email: offer.email, whatsapp: offer.whatsapp }} />
         </div>
       </div>

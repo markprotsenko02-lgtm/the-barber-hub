@@ -164,7 +164,7 @@ function BarberProfile() {
           >
             <MessageCircle className="h-4 w-4 text-primary" />
             <span className="text-muted-foreground">WhatsApp:</span>
-            <span className="font-medium">+{barber.whatsapp}</span>
+            <span className="font-medium tracking-wider">+{barber.whatsapp.slice(0, -9) || "34"} ••• ••• •••</span>
           </a>
           {barber.email && (
             <a
