@@ -14,6 +14,7 @@ import { useBarbers } from "@/lib/barber-store";
 import { useAuth } from "@/hooks/use-auth";
 import { PhotoCapture } from "@/components/photo-capture";
 import { AVATARS, AvatarPicker } from "@/components/avatar-picker";
+import { WhatsAppInput } from "@/components/whatsapp";
 import { askListingAlerts } from "@/components/new-listing-notifier";
 import { TipsPanel } from "@/components/tips-panel";
 import { Button } from "@/components/ui/button";
@@ -50,7 +51,7 @@ export const Route = createFileRoute("/publicar-oferta")({
 const schema = z.object({
   shopName: z.string().trim().min(2, "Indica el nombre de la barbería").max(80),
   lookingFor: z.string().trim().min(5, "Describe a quién buscas").max(120),
-  whatsapp: z.string().trim().regex(/^\d{9,15}$/, "Solo números, con prefijo del país"),
+  whatsapp: z.string().trim().regex(/^\d{9}$/, "Introduce los 9 dígitos de tu móvil"),
   email: z.union([z.literal(""), z.string().trim().email("Email no válido").max(255)]),
 });
 
@@ -123,7 +124,7 @@ function PublishOffer() {
         conditions: [],
         description: parsed.data.lookingFor,
         email: parsed.data.email,
-        whatsapp: parsed.data.whatsapp,
+        whatsapp: `34${parsed.data.whatsapp}`,
       });
       toast.success("Anuncio publicado", {
         description: "Ya aparece en el muro de barberías.",
@@ -261,14 +262,8 @@ function PublishOffer() {
               </SelectContent>
             </Select>
           </Field>
-          <Field label="WhatsApp (prefijo + número)" error={errors["whatsapp"]}>
-            <Input
-              inputMode="numeric"
-              placeholder="Ej: 34600123456"
-              value={form.whatsapp}
-              maxLength={15}
-              onChange={(e) => set("whatsapp")(e.target.value.replace(/\D/g, ""))}
-            />
+          <Field label="WhatsApp" error={errors["whatsapp"]}>
+            <WhatsAppInput value={form.whatsapp} onChange={set("whatsapp")} />
           </Field>
           <div className="sm:col-span-2">
             <Field label="Email de contacto (opcional)" error={errors["email"]}>
