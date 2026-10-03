@@ -37,8 +37,8 @@ export function BarberCard({ barber }: { barber: Barber }) {
               {barber.name}
             </h3>
             <p className="flex items-center gap-1 truncate text-xs text-muted-foreground">
-              <MapPin className="h-3 w-3 shrink-0" /> {barber.city} ·{" "}
-              {barber.experienceYears} años de experiencia
+              <MapPin className="h-3 w-3 shrink-0" /> {barber.city}
+              {barber.experienceYears > 0 && ` · ${barber.experienceYears} años de experiencia`}
             </p>
           </div>
         </div>
@@ -83,9 +83,11 @@ export function BarberCard({ barber }: { barber: Barber }) {
               <Clock className="h-3.5 w-3.5 shrink-0 text-primary" />
               {barber.availability}
             </span>
-            <span className="shrink-0 font-semibold text-foreground">
-              {barber.salaryMin}–{barber.salaryMax} €/mes
-            </span>
+            {barber.salaryMax > 0 && (
+              <span className="shrink-0 font-semibold text-foreground">
+                {barber.salaryMin}–{barber.salaryMax} €/mes
+              </span>
+            )}
           </div>
         </div>
       </div>

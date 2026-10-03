@@ -17,7 +17,6 @@ import { askListingAlerts } from "@/components/new-listing-notifier";
 import { TipsPanel } from "@/components/tips-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -33,7 +32,7 @@ export const Route = createFileRoute("/publicar-oferta")({
       {
         name: "description",
         content:
-          "Publica el anuncio de tu barbería: a quién buscas, especialidades requeridas, ciudad, contrato y condiciones ofrecidas.",
+          "Publica tu búsqueda de barbero en un minuto: nombre, ciudad, a quién buscas, contrato, WhatsApp y fotos.",
       },
       { property: "og:title", content: "Publicar búsqueda de barbero — BarberJobs" },
       {
@@ -50,11 +49,7 @@ export const Route = createFileRoute("/publicar-oferta")({
 const schema = z.object({
   shopName: z.string().trim().min(2, "Indica el nombre de la barbería").max(80),
   lookingFor: z.string().trim().min(5, "Describe a quién buscas").max(120),
-  description: z.string().trim().min(20, "Cuenta algo más de la vacante").max(800),
-  email: z.string().trim().email("Email no válido").max(255),
   whatsapp: z.string().trim().regex(/^\d{9,15}$/, "Solo números, con prefijo del país"),
-  salaryMin: z.number().min(1, "Indica el salario ofrecido").max(9000),
-  salaryMax: z.number().min(1, "Indica el salario ofrecido").max(9000),
 });
 
 const DEFAULT_COVER =
@@ -64,31 +59,18 @@ const DEFAULT_LOGO =
 
 const OFFER_TIPS = [
   {
-    title: "Define el perfil que necesitas",
-    text: "Concreta si buscas barbero senior, junior o mixto, y qué técnicas debe dominar en el día a día.",
+    title: "Di a quién buscas",
+    text: "Concreta si buscas barbero senior o junior y qué técnicas debe dominar.",
   },
   {
-    title: "Especialidades requeridas",
-    text: "Marca las técnicas imprescindibles (fade, barba, tijera, color) para filtrar candidaturas.",
+    title: "Fotos del local",
+    text: "Una buena foto de tu barbería atrae más candidatos.",
   },
   {
-    title: "Modalidad y contrato",
-    text: "Indica si es contrato por jornada, autónomo, porcentaje de comisión o alquiler de sillón.",
-  },
-  {
-    title: "Nivel de experiencia",
-    text: "Di los años mínimos que pides y si aceptas perfiles recién salidos de academia.",
-  },
-  {
-    title: "Ambiente de la barbería",
-    text: "Cuenta el tipo de clientela, el estilo del local y cómo se trabaja en equipo.",
-  },
-  {
-    title: "Condiciones ofrecidas",
-    text: "Fijo, comisiones, días libres, formación pagada y horarios: cuanto más claro, mejores respuestas.",
+    title: "WhatsApp con prefijo",
+    text: "Pon el número con prefijo del país (34 para España) para que te escriban al momento.",
   },
 ];
-
 
 function PublishOffer() {
   const { addOffer } = useBarbers();
@@ -98,14 +80,9 @@ function PublishOffer() {
   const [form, setForm] = React.useState({
     shopName: "",
     lookingFor: "",
-    description: "",
-    email: "",
     whatsapp: "",
     city: CITIES[0] as string,
     contractType: CONTRACT_TYPES[0] as ContractType,
-    salaryMin: "",
-    salaryMax: "",
-    conditions: "",
   });
   const [photos, setPhotos] = React.useState<string[]>([]);
   const [specialties, setSpecialties] = React.useState<Specialty[]>([]);
@@ -120,22 +97,15 @@ function PublishOffer() {
       navigate({ to: "/auth" });
       return;
     }
-    const parsed = schema.safeParse({
-      ...form,
-      salaryMin: Number(form.salaryMin) || 0,
-      salaryMax: Number(form.salaryMax) || 0,
-    });
+    const parsed = schema.safeParse(form);
+    const next: Record<string, string> = {};
     if (!parsed.success) {
-      const next: Record<string, string> = {};
       for (const issue of parsed.error.issues) next[String(issue.path[0])] = issue.message;
-      setErrors(next);
-      return;
     }
-    if (specialties.length === 0) {
-      setErrors({ specialties: "Elige al menos una especialidad" });
-      return;
-    }
-    setErrors({});
+    if (specialties.length === 0) next["specialties"] = "Elige al menos una especialidad";
+    if (photos.length === 0) next["photos"] = "Añade al menos una foto de tu barbería";
+    setErrors(next);
+    if (!parsed.success || Object.keys(next).length > 0) return;
     setSubmitting(true);
     try {
       await addOffer({
@@ -146,15 +116,11 @@ function PublishOffer() {
         lookingFor: parsed.data.lookingFor,
         specialties,
         contractType: form.contractType,
-        salaryMin: parsed.data.salaryMin,
-        salaryMax: parsed.data.salaryMax,
-        conditions: form.conditions
-          .split("\n")
-          .map((c) => c.trim())
-          .filter(Boolean)
-          .slice(0, 6),
-        description: parsed.data.description,
-        email: parsed.data.email,
+        salaryMin: 0,
+        salaryMax: 0,
+        conditions: [],
+        description: parsed.data.lookingFor,
+        email: user.email ?? "",
         whatsapp: parsed.data.whatsapp,
       });
       toast.success("Anuncio publicado", {
@@ -185,7 +151,7 @@ function PublishOffer() {
         Publicar búsqueda de barbero
       </h1>
       <p className="mt-1 text-sm text-muted-foreground">
-        Rellena la vacante y aparecerá al instante en el muro de barberías.
+        Solo lo esencial y las fotos de tu barbería. Aparece al instante en el muro.
       </p>
 
       <div className="mt-6">
@@ -200,6 +166,7 @@ function PublishOffer() {
         <div className="space-y-3 rounded-xl border border-border/70 bg-card p-4">
           <p className="font-display text-sm uppercase tracking-wide">Fotos de tu barbería</p>
           <p className="text-xs text-muted-foreground">La primera será la portada del anuncio y la segunda el logo.</p>
+          {errors["photos"] && <p className="text-xs text-destructive">{errors["photos"]}</p>}
           <PhotoCapture onUploaded={({ url }) => setPhotos((p) => [...p, url].slice(0, 6))} />
           {photos.length > 0 && (
             <ul className="grid grid-cols-3 gap-2">
@@ -274,7 +241,7 @@ function PublishOffer() {
           </div>
         </div>
 
-        <div className="grid gap-4 rounded-xl border border-border/70 bg-card p-4 sm:grid-cols-3">
+        <div className="grid gap-4 rounded-xl border border-border/70 bg-card p-4 sm:grid-cols-2">
           <Field label="Tipo de contrato">
             <Select
               value={form.contractType}
@@ -292,66 +259,15 @@ function PublishOffer() {
               </SelectContent>
             </Select>
           </Field>
-          <Field label="Desde (€/mes)" error={errors["salaryMin"]}>
+          <Field label="WhatsApp (prefijo + número)" error={errors["whatsapp"]}>
             <Input
-              type="number"
-              min={0}
-              max={9000}
-              placeholder="Ej: 1400"
-              value={form.salaryMin}
-              onChange={(e) => set("salaryMin")(e.target.value)}
+              inputMode="numeric"
+              placeholder="Ej: 34600123456"
+              value={form.whatsapp}
+              maxLength={15}
+              onChange={(e) => set("whatsapp")(e.target.value.replace(/\D/g, ""))}
             />
           </Field>
-          <Field label="Hasta (€/mes)" error={errors["salaryMax"]}>
-            <Input
-              type="number"
-              min={0}
-              max={9000}
-              placeholder="Ej: 2000"
-              value={form.salaryMax}
-              onChange={(e) => set("salaryMax")(e.target.value)}
-            />
-          </Field>
-        </div>
-
-        <div className="space-y-4 rounded-xl border border-border/70 bg-card p-4">
-          <Field label="Descripción de la vacante" error={errors["description"]}>
-            <Textarea
-              rows={4}
-              maxLength={800}
-              placeholder="Ej: Buscamos barbero con experiencia en fade y arreglo de barba para incorporación inmediata. Clientela joven y ambiente de equipo."
-              value={form.description}
-              onChange={(e) => set("description")(e.target.value)}
-            />
-          </Field>
-          <Field label="Condiciones ofrecidas (una por línea)">
-            <Textarea
-              rows={4}
-              maxLength={500}
-              placeholder={"Fijo + comisión\n2 días libres seguidos\nFormación pagada"}
-              value={form.conditions}
-              onChange={(e) => set("conditions")(e.target.value)}
-            />
-          </Field>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="Email de contacto" error={errors["email"]}>
-              <Input
-                type="email"
-                placeholder="Ej: contacto@barberia.com"
-                value={form.email}
-                maxLength={255}
-                onChange={(e) => set("email")(e.target.value)}
-              />
-            </Field>
-            <Field label="WhatsApp (con prefijo, solo números)" error={errors["whatsapp"]}>
-              <Input
-                placeholder="Ej: 34600123456"
-                value={form.whatsapp}
-                maxLength={15}
-                onChange={(e) => set("whatsapp")(e.target.value.replace(/\D/g, ""))}
-              />
-            </Field>
-          </div>
         </div>
 
         <Button type="submit" disabled={submitting} className="w-full font-semibold sm:w-auto">

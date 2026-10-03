@@ -69,9 +69,11 @@ export function OfferCard({ offer }: { offer: ShopOffer }) {
             <span className="rounded-md bg-secondary px-2 py-1 text-xs font-medium">
               {offer.contractType}
             </span>
-            <span className="font-semibold">
-              {offer.salaryMin}–{offer.salaryMax} €/mes
-            </span>
+            {offer.salaryMax > 0 && (
+              <span className="font-semibold">
+                {offer.salaryMin}–{offer.salaryMax} €/mes
+              </span>
+            )}
           </div>
           <AuthGate className="grid grid-cols-2 gap-2">
             <Button asChild size="sm" className="font-semibold">
