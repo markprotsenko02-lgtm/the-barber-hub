@@ -25,7 +25,8 @@ export function SiteHeader() {
           >
             <Scissors className="h-3.5 w-3.5 shrink-0 sm:h-4 sm:w-4" />
             <span className="whitespace-nowrap">
-              Soy Barbero <span className="hidden sm:inline">• Publicar Portfolio</span>
+              <span className="hidden sm:inline">Soy </span>Barbero{" "}
+              <span className="hidden sm:inline">• Publicar Portfolio</span>
             </span>
           </Link>
           <Link
