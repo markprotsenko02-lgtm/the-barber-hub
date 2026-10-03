@@ -16,9 +16,6 @@ export function SiteHeader() {
             <span className="block truncate font-display text-lg font-semibold uppercase tracking-widest">
               Barber<span className="text-primary">Jobs</span>
             </span>
-            <span className="hidden text-[11px] uppercase tracking-[0.2em] text-muted-foreground sm:block">
-              Portfolios &amp; fichajes
-            </span>
           </span>
         </Link>
         <nav className="flex shrink-0 items-center gap-2">
