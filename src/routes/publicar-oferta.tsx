@@ -13,6 +13,7 @@ import {
 import { useBarbers } from "@/lib/barber-store";
 import { useAuth } from "@/hooks/use-auth";
 import { PhotoCapture } from "@/components/photo-capture";
+import { AVATARS, AvatarPicker } from "@/components/avatar-picker";
 import { askListingAlerts } from "@/components/new-listing-notifier";
 import { TipsPanel } from "@/components/tips-panel";
 import { Button } from "@/components/ui/button";
@@ -50,12 +51,11 @@ const schema = z.object({
   shopName: z.string().trim().min(2, "Indica el nombre de la barbería").max(80),
   lookingFor: z.string().trim().min(5, "Describe a quién buscas").max(120),
   whatsapp: z.string().trim().regex(/^\d{9,15}$/, "Solo números, con prefijo del país"),
+  email: z.union([z.literal(""), z.string().trim().email("Email no válido").max(255)]),
 });
 
 const DEFAULT_COVER =
   "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=900&q=80";
-const DEFAULT_LOGO =
-  "https://images.unsplash.com/photo-1521490683712-35a1cb61fa6d?auto=format&fit=crop&w=300&q=80";
 
 const OFFER_TIPS = [
   {
@@ -81,9 +81,11 @@ function PublishOffer() {
     shopName: "",
     lookingFor: "",
     whatsapp: "",
+    email: "",
     city: CITIES[0] as string,
     contractType: CONTRACT_TYPES[0] as ContractType,
   });
+  const [logo, setLogo] = React.useState(AVATARS[0] as string);
   const [photos, setPhotos] = React.useState<string[]>([]);
   const [specialties, setSpecialties] = React.useState<Specialty[]>([]);
   const [errors, setErrors] = React.useState<Record<string, string>>({});
@@ -111,7 +113,7 @@ function PublishOffer() {
       await addOffer({
         shopName: parsed.data.shopName,
         city: form.city,
-        logo: photos[1] ?? photos[0] ?? DEFAULT_LOGO,
+        logo,
         cover: photos[0] ?? DEFAULT_COVER,
         lookingFor: parsed.data.lookingFor,
         specialties,
@@ -120,7 +122,7 @@ function PublishOffer() {
         salaryMax: 0,
         conditions: [],
         description: parsed.data.lookingFor,
-        email: user.email ?? "",
+        email: parsed.data.email,
         whatsapp: parsed.data.whatsapp,
       });
       toast.success("Anuncio publicado", {
@@ -165,7 +167,7 @@ function PublishOffer() {
       <form onSubmit={submit} className="mt-8 space-y-5" noValidate>
         <div className="space-y-3 rounded-xl border border-border/70 bg-card p-4">
           <p className="font-display text-sm uppercase tracking-wide">Fotos de tu barbería</p>
-          <p className="text-xs text-muted-foreground">La primera será la portada del anuncio y la segunda el logo.</p>
+          <p className="text-xs text-muted-foreground">La primera será la portada del anuncio.</p>
           {errors["photos"] && <p className="text-xs text-destructive">{errors["photos"]}</p>}
           <PhotoCapture onUploaded={({ url }) => setPhotos((p) => [...p, url].slice(0, 6))} />
           {photos.length > 0 && (
@@ -268,6 +270,22 @@ function PublishOffer() {
               onChange={(e) => set("whatsapp")(e.target.value.replace(/\D/g, ""))}
             />
           </Field>
+          <div className="sm:col-span-2">
+            <Field label="Email de contacto (opcional)" error={errors["email"]}>
+              <Input
+                type="email"
+                placeholder="Ej: contacto@barberia.com"
+                value={form.email}
+                maxLength={255}
+                onChange={(e) => set("email")(e.target.value)}
+              />
+            </Field>
+          </div>
+        </div>
+
+        <div className="space-y-3 rounded-xl border border-border/70 bg-card p-4">
+          <p className="text-xs uppercase tracking-wider text-muted-foreground">Logo o foto de perfil</p>
+          <AvatarPicker value={logo} onChange={setLogo} />
         </div>
 
         <Button type="submit" disabled={submitting} className="w-full font-semibold sm:w-auto">
