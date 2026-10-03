@@ -34,6 +34,16 @@ export function EmptyWall({ kind, hasAny }: { kind: "barbers" | "shops"; hasAny:
           <Bell className="h-4 w-4" />
           {barbers ? "Avísame cuando haya barberos" : "Avísame cuando haya barberías"}
         </Button>
+        <Button
+          type="button"
+          size="sm"
+          variant="outline"
+          className="border-primary/50 text-primary"
+          onClick={() => askListingAlerts(barbers ? "barber" : "shop")}
+        >
+          <Bell className="h-4 w-4" />
+          {barbers ? "Avísame cuando haya barberías" : "Avísame cuando haya barberos"}
+        </Button>
       </div>
     </div>
   );
