@@ -116,7 +116,10 @@ function AuthPage() {
   }
 
   async function oauth(provider: "google" | "apple") {
-    const result = await lovable.auth.signInWithOAuth(provider, { redirect_uri: window.location.origin });
+    const result = await lovable.auth.signInWithOAuth(provider, {
+      redirect_uri: window.location.origin,
+      ...(provider === "google" ? { extraParams: { prompt: "select_account" } } : {}),
+    });
     if (result.error) {
       toast.error("No se pudo iniciar sesión");
       return;
