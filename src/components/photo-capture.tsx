@@ -38,7 +38,20 @@ export function PhotoCapture({
     e.target.value = "";
     if (!file) return;
     if (!user) {
-      toast.error("Inicia sesión para subir fotos");
+      if (!file.type.startsWith("image")) {
+        toast.error("Los vídeos se pueden subir después de crear tu cuenta");
+        return;
+      }
+      setBusy(true);
+      try {
+        const { fileToDataUrl } = await import("@/lib/pending-draft");
+        await onUploaded({ url: await fileToDataUrl(file), type: "image" });
+        toast.success("Foto añadida");
+      } catch {
+        toast.error("No se pudo añadir la foto");
+      } finally {
+        setBusy(false);
+      }
       return;
     }
     setBusy(true);

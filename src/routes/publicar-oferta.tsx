@@ -12,6 +12,7 @@ import {
 } from "@/lib/barber-data";
 import { useBarbers } from "@/lib/barber-store";
 import { useAuth } from "@/hooks/use-auth";
+import { clearDraft, ensureUploaded, isPending, loadDraft, saveDraft } from "@/lib/pending-draft";
 import { PhotoCapture } from "@/components/photo-capture";
 import { AVATARS, AvatarPicker } from "@/components/avatar-picker";
 import { WhatsAppInput } from "@/components/whatsapp";
@@ -91,41 +92,53 @@ function PublishOffer() {
   const [specialties, setSpecialties] = React.useState<Specialty[]>([]);
   const [errors, setErrors] = React.useState<Record<string, string>>({});
 
-  const submit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!user) {
-      toast.error("Inicia sesión para publicar tu anuncio", {
-        description: "Crea tu cuenta gratis en un minuto.",
-      });
-      navigate({ to: "/auth" });
-      return;
+  type Draft = {
+    form: typeof form;
+    logo: string;
+    photos: string[];
+    specialties: Specialty[];
+  };
+  const [restored, setRestored] = React.useState(false);
+  const autoRan = React.useRef(false);
+
+  React.useEffect(() => {
+    const d = loadDraft<Draft>("offer");
+    if (d) {
+      setForm(d.form);
+      setLogo(d.logo);
+      setPhotos(d.photos);
+      setSpecialties(d.specialties);
     }
-    const parsed = schema.safeParse(form);
-    const next: Record<string, string> = {};
-    if (!parsed.success) {
-      for (const issue of parsed.error.issues) next[String(issue.path[0])] = issue.message;
-    }
-    if (specialties.length === 0) next["specialties"] = "Elige al menos una especialidad";
-    if (photos.length === 0) next["photos"] = "Añade al menos una foto de tu barbería";
-    setErrors(next);
-    if (!parsed.success || Object.keys(next).length > 0) return;
+    setRestored(true);
+  }, []);
+
+  React.useEffect(() => {
+    if (!restored) return;
+    saveDraft("offer", { form, logo, photos, specialties }, false);
+  }, [restored, form, logo, photos, specialties]);
+
+  const publish = async (userId: string, d: Draft) => {
     setSubmitting(true);
     try {
+      const up = (u: string) => ensureUploaded(userId, u);
+      const finalPhotos = await Promise.all(d.photos.map(up));
+      const finalLogo = await up(d.logo);
       await addOffer({
-        shopName: parsed.data.shopName,
-        city: form.city,
-        logo,
-        cover: photos[0] ?? DEFAULT_COVER,
-        lookingFor: parsed.data.lookingFor,
-        specialties,
-        contractType: form.contractType,
+        shopName: d.form.shopName.trim(),
+        city: d.form.city,
+        logo: finalLogo,
+        cover: finalPhotos[0] ?? DEFAULT_COVER,
+        lookingFor: d.form.lookingFor.trim(),
+        specialties: d.specialties,
+        contractType: d.form.contractType,
         salaryMin: 0,
         salaryMax: 0,
         conditions: [],
-        description: parsed.data.lookingFor,
-        email: parsed.data.email,
-        whatsapp: `34${parsed.data.whatsapp}`,
+        description: d.form.lookingFor.trim(),
+        email: d.form.email.trim(),
+        whatsapp: `34${d.form.whatsapp.replace(/\D/g, "")}`,
       });
+      clearDraft("offer");
       toast.success("Anuncio publicado", {
         description: "Ya aparece en el muro de barberías.",
       });
@@ -138,6 +151,38 @@ function PublishOffer() {
     } finally {
       setSubmitting(false);
     }
+  };
+
+  React.useEffect(() => {
+    if (!restored || !user || autoRan.current || !isPending("offer")) return;
+    const d = loadDraft<Draft>("offer");
+    if (!d) return;
+    autoRan.current = true;
+    void publish(user.id, d);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [restored, user]);
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const parsed = schema.safeParse(form);
+    const next: Record<string, string> = {};
+    if (!parsed.success) {
+      for (const issue of parsed.error.issues) next[String(issue.path[0])] = issue.message;
+    }
+    if (specialties.length === 0) next["specialties"] = "Elige al menos una especialidad";
+    if (photos.length === 0) next["photos"] = "Añade al menos una foto de tu barbería";
+    setErrors(next);
+    if (!parsed.success || Object.keys(next).length > 0) return;
+    const draft: Draft = { form, logo, photos, specialties };
+    if (!user) {
+      saveDraft("offer", draft, true);
+      toast.success("¡Casi listo! Crea tu cuenta para publicarlo", {
+        description: "Tus datos y fotos están guardados. Se publicará solo al entrar.",
+      });
+      navigate({ to: "/auth" });
+      return;
+    }
+    await publish(user.id, draft);
   };
 
   const set = (key: keyof typeof form) => (value: string) =>
