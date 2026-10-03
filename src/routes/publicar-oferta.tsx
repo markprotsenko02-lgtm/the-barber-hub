@@ -56,8 +56,6 @@ const schema = z.object({
 
 const DEFAULT_COVER =
   "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=900&q=80";
-const DEFAULT_LOGO =
-  "https://images.unsplash.com/photo-1521490683712-35a1cb61fa6d?auto=format&fit=crop&w=300&q=80";
 
 const OFFER_TIPS = [
   {

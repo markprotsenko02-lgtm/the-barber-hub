@@ -38,7 +38,9 @@ export function AvatarPicker({ value, onChange }: { value: string; onChange: (ur
         </div>
       )}
       <p className="text-xs text-muted-foreground">O sube tu propia foto:</p>
-      <PhotoCapture onUploaded={({ url, type }) => type === "image" && onChange(url)} />
+      <PhotoCapture onUploaded={({ url, type }) => {
+          if (type === "image") onChange(url);
+        }} />
     </div>
   );
 }

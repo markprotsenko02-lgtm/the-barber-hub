@@ -55,8 +55,6 @@ const schema = z.object({
   email: z.union([z.literal(""), z.string().trim().email("Email no válido").max(255)]),
 });
 
-const DEFAULT_AVATAR =
-  "https://images.unsplash.com/photo-1503443207922-dff7d543fd0e?auto=format&fit=crop&w=300&q=80";
 const DEFAULT_COVER =
   "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?auto=format&fit=crop&w=1200&q=80";
 
