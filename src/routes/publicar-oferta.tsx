@@ -161,6 +161,7 @@ function PublishOffer() {
         description: "Ya aparece en el muro de barberías.",
       });
       navigate({ to: "/" });
+      askListingAlerts("shop");
     } catch {
       toast.error("No se pudo publicar", {
         description: "Inténtalo de nuevo en unos segundos.",
