@@ -15,6 +15,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteHeader, SiteFooter, BottomNav } from "@/components/site-header";
 import { Toaster } from "@/components/ui/sonner";
 import { ProfileViewNotifier } from "@/components/profile-view-notifier";
+import { NewListingNotifier } from "@/components/new-listing-notifier";
 
 function NotFoundComponent() {
   return (
@@ -158,6 +159,7 @@ function RootComponent() {
       </div>
       <Toaster position="top-center" />
       <ProfileViewNotifier />
+      <NewListingNotifier />
     </QueryClientProvider>
   );
 }

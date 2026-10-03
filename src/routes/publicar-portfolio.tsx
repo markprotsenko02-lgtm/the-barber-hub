@@ -16,6 +16,7 @@ import {
 import { useBarbers } from "@/lib/barber-store";
 import { useAuth } from "@/hooks/use-auth";
 import { PhotoCapture } from "@/components/photo-capture";
+import { askListingAlerts } from "@/components/new-listing-notifier";
 import { TipsPanel } from "@/components/tips-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -210,6 +211,7 @@ function PublishPortfolio() {
         description: "Ya apareces en el muro de barberos.",
       });
       navigate({ to: "/barberos/$barberId", params: { barberId: created.id } });
+      askListingAlerts("barber");
     } catch {
       toast.error("No se pudo publicar", {
         description: "Inténtalo de nuevo en unos segundos.",

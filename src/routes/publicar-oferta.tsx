@@ -13,6 +13,7 @@ import {
 import { useBarbers } from "@/lib/barber-store";
 import { useAuth } from "@/hooks/use-auth";
 import { PhotoCapture } from "@/components/photo-capture";
+import { askListingAlerts } from "@/components/new-listing-notifier";
 import { TipsPanel } from "@/components/tips-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -160,6 +161,7 @@ function PublishOffer() {
         description: "Ya aparece en el muro de barberías.",
       });
       navigate({ to: "/" });
+      askListingAlerts("shop");
     } catch {
       toast.error("No se pudo publicar", {
         description: "Inténtalo de nuevo en unos segundos.",
