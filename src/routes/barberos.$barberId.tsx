@@ -142,15 +142,17 @@ function BarberProfile() {
               <MessageCircle className="h-4 w-4" /> Contactar por WhatsApp
             </a>
           </Button>
-          <Button asChild variant="outline">
-            <a
-              href={`mailto:${barber.email}?subject=${encodeURIComponent(
-                "Oferta de trabajo vía BarberJobs",
-              )}`}
-            >
-              <Mail className="h-4 w-4" /> Enviar email
-            </a>
-          </Button>
+          {barber.email && (
+            <Button asChild variant="outline">
+              <a
+                href={`mailto:${barber.email}?subject=${encodeURIComponent(
+                  "Oferta de trabajo vía BarberJobs",
+                )}`}
+              >
+                <Mail className="h-4 w-4" /> Enviar email
+              </a>
+            </Button>
+          )}
         </AuthGate>
 
         <div className="mt-4 flex flex-wrap gap-2">
@@ -164,14 +166,16 @@ function BarberProfile() {
             <span className="text-muted-foreground">WhatsApp:</span>
             <span className="font-medium">+{barber.whatsapp}</span>
           </a>
-          <a
-            href={`mailto:${barber.email}`}
-            className="flex items-center gap-2 rounded-lg border border-border/70 bg-card px-3 py-2 text-sm transition-colors hover:border-primary/60"
-          >
-            <Mail className="h-4 w-4 text-primary" />
-            <span className="text-muted-foreground">Email:</span>
-            <span className="font-medium">{barber.email}</span>
-          </a>
+          {barber.email && (
+            <a
+              href={`mailto:${barber.email}`}
+              className="flex items-center gap-2 rounded-lg border border-border/70 bg-card px-3 py-2 text-sm transition-colors hover:border-primary/60"
+            >
+              <Mail className="h-4 w-4 text-primary" />
+              <span className="text-muted-foreground">Email:</span>
+              <span className="font-medium">{barber.email}</span>
+            </a>
+          )}
         </div>
 
         <ReportButton className="mt-3" target={{ type: "barbero", id: barber.id, name: barber.name, email: barber.email, whatsapp: barber.whatsapp }} />

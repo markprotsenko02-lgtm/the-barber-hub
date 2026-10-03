@@ -75,7 +75,7 @@ export function OfferCard({ offer }: { offer: ShopOffer }) {
               </span>
             )}
           </div>
-          <AuthGate className="grid grid-cols-2 gap-2">
+          <AuthGate className={`grid gap-2 ${offer.email ? "grid-cols-2" : "grid-cols-1"}`}>
             <Button asChild size="sm" className="font-semibold">
               <a
                 href={`https://wa.me/${offer.whatsapp}?text=${encodeURIComponent(
@@ -87,11 +87,13 @@ export function OfferCard({ offer }: { offer: ShopOffer }) {
                 <MessageCircle className="h-4 w-4" /> WhatsApp
               </a>
             </Button>
-            <Button asChild size="sm" variant="outline">
-              <a href={`mailto:${offer.email}?subject=${encodeURIComponent("Candidatura BarberJobs")}`}>
-                <Mail className="h-4 w-4" /> Email
-              </a>
-            </Button>
+            {offer.email && (
+              <Button asChild size="sm" variant="outline">
+                <a href={`mailto:${offer.email}?subject=${encodeURIComponent("Candidatura BarberJobs")}`}>
+                  <Mail className="h-4 w-4" /> Email
+                </a>
+              </Button>
+            )}
           </AuthGate>
           <ReportButton target={{ type: "barbería", id: offer.id, name: offer.shopName, email: offer.email, whatsapp: offer.whatsapp }} />
         </div>

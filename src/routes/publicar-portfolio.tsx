@@ -15,6 +15,7 @@ import {
 import { useBarbers } from "@/lib/barber-store";
 import { useAuth } from "@/hooks/use-auth";
 import { PhotoCapture } from "@/components/photo-capture";
+import { AVATARS, AvatarPicker } from "@/components/avatar-picker";
 import { askListingAlerts } from "@/components/new-listing-notifier";
 import { TipsPanel } from "@/components/tips-panel";
 import { Button } from "@/components/ui/button";
@@ -51,6 +52,7 @@ export const Route = createFileRoute("/publicar-portfolio")({
 const schema = z.object({
   name: z.string().trim().min(2, "Indica tu nombre").max(80),
   whatsapp: z.string().trim().regex(/^\d{9,15}$/, "Solo números, con prefijo del país"),
+  email: z.union([z.literal(""), z.string().trim().email("Email no válido").max(255)]),
 });
 
 const DEFAULT_AVATAR =
@@ -82,7 +84,9 @@ function PublishPortfolio() {
     name: "",
     city: CITIES[0] as string,
     whatsapp: "",
+    email: "",
   });
+  const [avatar, setAvatar] = React.useState(AVATARS[0] as string);
   const [specialties, setSpecialties] = React.useState<Specialty[]>([]);
   const [contracts, setContracts] = React.useState<ContractType[]>([]);
   const [gallery, setGallery] = React.useState<GalleryItem[]>([]);
@@ -118,7 +122,7 @@ function PublishPortfolio() {
         name: parsed.data.name,
         headline: specialties.slice(0, 3).join(" · "),
         city: form.city,
-        avatar: firstImage?.url ?? DEFAULT_AVATAR,
+        avatar,
         cover: firstImage?.url ?? DEFAULT_COVER,
         specialties,
         contractTypes: contracts,
@@ -128,7 +132,7 @@ function PublishPortfolio() {
         experienceYears: 0,
         bio: "",
         education: [],
-        email: user.email ?? "",
+        email: parsed.data.email,
         whatsapp: parsed.data.whatsapp,
         gallery,
       });
@@ -227,6 +231,22 @@ function PublishPortfolio() {
               />
             </Field>
           </div>
+          <div className="sm:col-span-2">
+            <Field label="Email de contacto (opcional)" error={errors["email"]}>
+              <Input
+                type="email"
+                placeholder="Ej: carlos@email.com"
+                value={form.email}
+                maxLength={255}
+                onChange={(e) => set("email")(e.target.value)}
+              />
+            </Field>
+          </div>
+        </div>
+
+        <div className="space-y-3 rounded-xl border border-border/70 bg-card p-4">
+          <p className="text-xs uppercase tracking-wider text-muted-foreground">Foto de perfil</p>
+          <AvatarPicker value={avatar} onChange={setAvatar} />
         </div>
 
         <div className="space-y-4 rounded-xl border border-border/70 bg-card p-4">
