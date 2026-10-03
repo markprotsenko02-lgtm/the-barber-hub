@@ -13,6 +13,7 @@ import { NearMeButton } from "@/components/near-me-button";
 import { isNear, type Coords } from "@/lib/native";
 import { BarberCard } from "@/components/barber-card";
 import { OfferCard } from "@/components/offer-card";
+import { EmptyWall } from "@/components/empty-wall";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -273,9 +274,7 @@ function BarbersWall({ barbers }: { barbers: ReturnType<typeof useBarbers>["barb
       </div>
 
       {filtered.length === 0 ? (
-        <p className="mt-10 rounded-xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
-          Ningún barbero coincide con estos filtros. Prueba a ampliarlos.
-        </p>
+        <EmptyWall kind="barbers" hasAny={barbers.length > 0} />
       ) : (
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((b) => (
@@ -335,9 +334,7 @@ function OffersWall({ offers }: { offers: ReturnType<typeof useBarbers>["offers"
       </div>
 
       {filtered.length === 0 ? (
-        <p className="mt-10 rounded-xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
-          No hay anuncios con estos filtros ahora mismo.
-        </p>
+        <EmptyWall kind="shops" hasAny={offers.length > 0} />
       ) : (
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((o) => (

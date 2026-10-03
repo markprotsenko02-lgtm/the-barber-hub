@@ -42,18 +42,19 @@ export function NewListingNotifier() {
     const h = (e: Event) => {
       const role = (e as CustomEvent<ListingRole>).detail;
       if (!readRoles().includes(role)) setAsk(role);
+      else toast.success("Ya tienes los avisos activados");
     };
     window.addEventListener(EVT, h);
     return () => window.removeEventListener(EVT, h);
   }, []);
 
   React.useEffect(() => {
-    if (!user || roles.length === 0) return;
-    const ch = supabase.channel(`listings-${user.id}`);
+    if (roles.length === 0) return;
+    const ch = supabase.channel(`listings-${user?.id ?? "guest"}`);
     if (roles.includes("barber")) {
       ch.on("postgres_changes", { event: "INSERT", schema: "public", table: "shop_offers" }, (p) => {
         const n = p.new as { user_id?: string; shop_name?: string; city?: string };
-        if (n.user_id === user.id) return;
+        if (user && n.user_id === user.id) return;
         const body = `${n.shop_name || "Una barbería"}${n.city ? ` (${n.city})` : ""} busca barbero`;
         toast(body);
         void showNotification("Nueva vacante en BarberJobs", body);
@@ -62,7 +63,7 @@ export function NewListingNotifier() {
     if (roles.includes("shop")) {
       ch.on("postgres_changes", { event: "INSERT", schema: "public", table: "barbers" }, (p) => {
         const n = p.new as { user_id?: string; name?: string; city?: string };
-        if (n.user_id === user.id) return;
+        if (user && n.user_id === user.id) return;
         const body = `${n.name || "Un barbero"}${n.city ? ` (${n.city})` : ""} ha publicado su portfolio`;
         toast(body);
         void showNotification("Nuevo barbero en BarberJobs", body);
