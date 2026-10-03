@@ -7,18 +7,18 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/70 bg-background/85 backdrop-blur-md">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
-        <Link to="/" className="flex min-w-0 items-center gap-2">
-          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-md bg-primary text-primary-foreground">
-            <Scissors className="h-5 w-5" />
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-2.5 sm:gap-3 sm:px-6 sm:py-3">
+        <Link to="/" className="flex min-w-0 items-center gap-1.5 sm:gap-2">
+          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-md bg-primary text-primary-foreground sm:h-9 sm:w-9">
+            <Scissors className="h-4 w-4 sm:h-5 sm:w-5" />
           </span>
           <span className="min-w-0">
-            <span className="block truncate font-display text-lg font-semibold uppercase tracking-widest">
+            <span className="block truncate font-display text-sm font-semibold uppercase tracking-wider sm:text-lg sm:tracking-widest">
               Barber<span className="text-primary">Jobs</span>
             </span>
           </span>
         </Link>
-        <nav className="flex shrink-0 items-center gap-2">
+        <nav className="flex shrink-0 items-center gap-1 sm:gap-2">
           <Link
             to="/publicar-portfolio"
             className="inline-flex items-center gap-1 rounded-md bg-primary px-1.5 py-1.5 font-display text-[9px] font-semibold uppercase tracking-wider text-primary-foreground shadow-sm transition-opacity hover:opacity-90 sm:gap-1.5 sm:rounded-lg sm:px-4 sm:py-2 sm:text-xs"
