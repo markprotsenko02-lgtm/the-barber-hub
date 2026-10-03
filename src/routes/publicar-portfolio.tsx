@@ -16,6 +16,7 @@ import { useBarbers } from "@/lib/barber-store";
 import { useAuth } from "@/hooks/use-auth";
 import { PhotoCapture } from "@/components/photo-capture";
 import { AVATARS, AvatarPicker } from "@/components/avatar-picker";
+import { WhatsAppInput } from "@/components/whatsapp";
 import { askListingAlerts } from "@/components/new-listing-notifier";
 import { TipsPanel } from "@/components/tips-panel";
 import { Button } from "@/components/ui/button";
@@ -51,7 +52,7 @@ export const Route = createFileRoute("/publicar-portfolio")({
 
 const schema = z.object({
   name: z.string().trim().min(2, "Indica tu nombre").max(80),
-  whatsapp: z.string().trim().regex(/^\d{9,15}$/, "Solo números, con prefijo del país"),
+  whatsapp: z.string().trim().regex(/^\d{9}$/, "Introduce los 9 dígitos de tu móvil"),
   email: z.union([z.literal(""), z.string().trim().email("Email no válido").max(255)]),
 });
 
@@ -131,7 +132,7 @@ function PublishPortfolio() {
         bio: "",
         education: [],
         email: parsed.data.email,
-        whatsapp: parsed.data.whatsapp,
+        whatsapp: `34${parsed.data.whatsapp}`,
         gallery,
       });
       toast.success("Portfolio publicado", {
@@ -219,14 +220,8 @@ function PublishPortfolio() {
             </Field>
           </div>
           <div className="sm:col-span-2">
-            <Field label="WhatsApp (prefijo + número)" error={errors["whatsapp"]}>
-              <Input
-                inputMode="numeric"
-                placeholder="Ej: 34600123456"
-                value={form.whatsapp}
-                maxLength={15}
-                onChange={(e) => set("whatsapp")(e.target.value.replace(/\D/g, ""))}
-              />
+            <Field label="WhatsApp" error={errors["whatsapp"]}>
+              <WhatsAppInput value={form.whatsapp} onChange={set("whatsapp")} />
             </Field>
           </div>
           <div className="sm:col-span-2">

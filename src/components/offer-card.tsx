@@ -1,7 +1,8 @@
-import { MapPin, Zap, Check, Mail, MessageCircle } from "lucide-react";
+import { MapPin, Zap, Check, Mail } from "lucide-react";
 import type { ShopOffer } from "@/lib/shop-data";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { WhatsAppLink } from "@/components/whatsapp";
 import { AuthGate } from "@/components/auth-gate";
 import { ReportButton } from "@/components/report-dialog";
 
@@ -75,26 +76,21 @@ export function OfferCard({ offer }: { offer: ShopOffer }) {
               </span>
             )}
           </div>
-          <AuthGate className={`grid gap-2 ${offer.email ? "grid-cols-2" : "grid-cols-1"}`}>
-            <Button asChild size="sm" className="font-semibold">
-              <a
-                href={`https://wa.me/${offer.whatsapp}?text=${encodeURIComponent(
-                  `Hola ${offer.shopName}, os escribo por la oferta publicada en BarberJobs.`,
-                )}`}
-                target="_blank"
-                rel="noreferrer noopener"
-              >
-                <MessageCircle className="h-4 w-4" /> WhatsApp
-              </a>
-            </Button>
-            {offer.email && (
+          <div className="flex flex-wrap items-center gap-2">
+          <WhatsAppLink
+            phone={offer.whatsapp}
+            message={`Hola ${offer.shopName}, os escribo por la oferta publicada en BarberJobs.`}
+          />
+          {offer.email && (
+            <AuthGate>
               <Button asChild size="sm" variant="outline">
                 <a href={`mailto:${offer.email}?subject=${encodeURIComponent("Candidatura BarberJobs")}`}>
                   <Mail className="h-4 w-4" /> Email
                 </a>
               </Button>
-            )}
-          </AuthGate>
+            </AuthGate>
+          )}
+          </div>
           <ReportButton target={{ type: "barbería", id: offer.id, name: offer.shopName, email: offer.email, whatsapp: offer.whatsapp }} />
         </div>
       </div>
