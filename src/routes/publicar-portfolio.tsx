@@ -14,6 +14,7 @@ import {
 } from "@/lib/barber-data";
 import { useBarbers } from "@/lib/barber-store";
 import { useAuth } from "@/hooks/use-auth";
+import { clearDraft, ensureUploaded, isPending, loadDraft, saveDraft } from "@/lib/pending-draft";
 import { PhotoCapture } from "@/components/photo-capture";
 import { AVATARS, AvatarPicker } from "@/components/avatar-picker";
 import { WhatsAppInput } from "@/components/whatsapp";
@@ -94,47 +95,61 @@ function PublishPortfolio() {
   const set = (key: keyof typeof form) => (value: string) =>
     setForm((f) => ({ ...f, [key]: value }));
 
-  const submit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!user) {
-      toast.error("Inicia sesión para publicar tu portfolio", {
-        description: "Crea tu cuenta gratis en un minuto.",
-      });
-      navigate({ to: "/auth" });
-      return;
-    }
-    const parsed = schema.safeParse(form);
-    const next: Record<string, string> = {};
-    if (!parsed.success) {
-      for (const issue of parsed.error.issues) next[String(issue.path[0])] = issue.message;
-    }
-    if (specialties.length === 0) next["specialties"] = "Elige al menos una especialidad";
-    if (contracts.length === 0) next["contracts"] = "Elige al menos un tipo de contrato";
-    if (gallery.length === 0) next["gallery"] = "Añade al menos una foto de tu trabajo";
-    setErrors(next);
-    if (!parsed.success || Object.keys(next).length > 0) return;
+  type Draft = {
+    form: typeof form;
+    avatar: string;
+    specialties: Specialty[];
+    contracts: ContractType[];
+    gallery: GalleryItem[];
+  };
+  const [restored, setRestored] = React.useState(false);
+  const autoRan = React.useRef(false);
 
-    const firstImage = gallery.find((g) => g.type === "image");
+  React.useEffect(() => {
+    const d = loadDraft<Draft>("portfolio");
+    if (d) {
+      setForm(d.form);
+      setAvatar(d.avatar);
+      setSpecialties(d.specialties);
+      setContracts(d.contracts);
+      setGallery(d.gallery);
+    }
+    setRestored(true);
+  }, []);
+
+  React.useEffect(() => {
+    if (!restored) return;
+    saveDraft("portfolio", { form, avatar, specialties, contracts, gallery }, false);
+  }, [restored, form, avatar, specialties, contracts, gallery]);
+
+  const publish = async (userId: string, d: Draft) => {
     setSubmitting(true);
     try {
+      const up = (u: string) => ensureUploaded(userId, u);
+      const finalGallery = await Promise.all(
+        d.gallery.map(async (g) => ({ ...g, url: await up(g.url) })),
+      );
+      const finalAvatar = await up(d.avatar);
+      const firstImage = finalGallery.find((g) => g.type === "image");
       const created = await addBarber({
-        name: parsed.data.name,
-        headline: specialties.slice(0, 3).join(" · "),
-        city: form.city,
-        avatar,
+        name: d.form.name.trim(),
+        headline: d.specialties.slice(0, 3).join(" · "),
+        city: d.form.city,
+        avatar: finalAvatar,
         cover: firstImage?.url ?? DEFAULT_COVER,
-        specialties,
-        contractTypes: contracts,
+        specialties: d.specialties,
+        contractTypes: d.contracts,
         availability: AVAILABILITIES[0],
         salaryMin: 0,
         salaryMax: 0,
         experienceYears: 0,
         bio: "",
         education: [],
-        email: parsed.data.email,
-        whatsapp: `34${parsed.data.whatsapp}`,
-        gallery,
+        email: d.form.email.trim(),
+        whatsapp: `34${d.form.whatsapp.replace(/\D/g, "")}`,
+        gallery: finalGallery,
       });
+      clearDraft("portfolio");
       toast.success("Portfolio publicado", {
         description: "Ya apareces en el muro de barberos.",
       });
@@ -147,6 +162,40 @@ function PublishPortfolio() {
     } finally {
       setSubmitting(false);
     }
+  };
+
+  React.useEffect(() => {
+    if (!restored || !user || autoRan.current || !isPending("portfolio")) return;
+    const d = loadDraft<Draft>("portfolio");
+    if (!d) return;
+    autoRan.current = true;
+    void publish(user.id, d);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [restored, user]);
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const parsed = schema.safeParse(form);
+    const next: Record<string, string> = {};
+    if (!parsed.success) {
+      for (const issue of parsed.error.issues) next[String(issue.path[0])] = issue.message;
+    }
+    if (specialties.length === 0) next["specialties"] = "Elige al menos una especialidad";
+    if (contracts.length === 0) next["contracts"] = "Elige al menos un tipo de contrato";
+    if (gallery.length === 0) next["gallery"] = "Añade al menos una foto de tu trabajo";
+    setErrors(next);
+    if (!parsed.success || Object.keys(next).length > 0) return;
+
+    const draft: Draft = { form, avatar, specialties, contracts, gallery };
+    if (!user) {
+      saveDraft("portfolio", draft, true);
+      toast.success("¡Casi listo! Crea tu cuenta para publicarlo", {
+        description: "Tus datos y fotos están guardados. Se publicará solo al entrar.",
+      });
+      navigate({ to: "/auth" });
+      return;
+    }
+    await publish(user.id, draft);
   };
 
   return (
