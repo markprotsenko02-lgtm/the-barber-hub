@@ -19,6 +19,7 @@ import { GalleryGrid } from "@/components/gallery-lightbox";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ContactForm } from "@/components/contact-form";
+import { WhatsAppIcon } from "@/components/whatsapp";
 import { AuthGate } from "@/components/auth-gate";
 import { ReportButton } from "@/components/report-dialog";
 
@@ -155,14 +156,14 @@ function BarberProfile() {
           )}
         </AuthGate>
 
-        <div className="mt-4 flex flex-wrap gap-2">
+        <AuthGate className="mt-4 flex flex-wrap gap-2">
           <a
             href={waLink}
             target="_blank"
             rel="noreferrer noopener"
             className="flex items-center gap-2 rounded-lg border border-border/70 bg-card px-3 py-2 text-sm transition-colors hover:border-primary/60"
           >
-            <MessageCircle className="h-4 w-4 text-primary" />
+            <WhatsAppIcon className="h-4 w-4 text-emerald-500" />
             <span className="text-muted-foreground">WhatsApp:</span>
             <span className="font-medium tracking-wider">+{barber.whatsapp.slice(0, -9) || "34"} ••• ••• •••</span>
           </a>
@@ -176,7 +177,7 @@ function BarberProfile() {
               <span className="font-medium">{barber.email}</span>
             </a>
           )}
-        </div>
+        </AuthGate>
 
         <ReportButton className="mt-3" target={{ type: "barbero", id: barber.id, name: barber.name, email: barber.email, whatsapp: barber.whatsapp }} />
 
