@@ -21,18 +21,18 @@ export function SiteHeader() {
         <nav className="flex shrink-0 items-center gap-2">
           <Link
             to="/publicar-portfolio"
-            className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-2.5 py-2 font-display text-[11px] font-semibold uppercase tracking-wider text-primary-foreground shadow-sm transition-opacity hover:opacity-90 sm:px-4 sm:text-xs"
+            className="inline-flex items-center gap-1 rounded-md bg-primary px-1.5 py-1.5 font-display text-[9px] font-semibold uppercase tracking-wider text-primary-foreground shadow-sm transition-opacity hover:opacity-90 sm:gap-1.5 sm:rounded-lg sm:px-4 sm:py-2 sm:text-xs"
           >
-            <Scissors className="h-4 w-4 shrink-0" />
+            <Scissors className="h-3.5 w-3.5 shrink-0 sm:h-4 sm:w-4" />
             <span className="whitespace-nowrap">
               Soy Barbero <span className="hidden sm:inline">• Publicar Portfolio</span>
             </span>
           </Link>
           <Link
             to="/publicar-oferta"
-            className="inline-flex items-center gap-1.5 rounded-lg border border-primary/60 bg-background/60 px-2.5 py-2 font-display text-[11px] font-semibold uppercase tracking-wider text-primary transition-colors hover:bg-primary/10 sm:px-4 sm:text-xs"
+            className="inline-flex items-center gap-1 rounded-md border border-primary/60 bg-background/60 px-1.5 py-1.5 font-display text-[9px] font-semibold uppercase tracking-wider text-primary transition-colors hover:bg-primary/10 sm:gap-1.5 sm:rounded-lg sm:px-4 sm:py-2 sm:text-xs"
           >
-            <Store className="h-4 w-4 shrink-0" />
+            <Store className="h-3.5 w-3.5 shrink-0 sm:h-4 sm:w-4" />
             <span className="whitespace-nowrap">
               Soy Barbería <span className="hidden sm:inline">• Buscar Barbero</span>
             </span>
@@ -40,17 +40,17 @@ export function SiteHeader() {
           {user ? (
             <button
               onClick={() => signOut()}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background/60 px-2.5 py-2 font-display text-[11px] font-semibold uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground sm:px-4 sm:text-xs"
+              className="inline-flex items-center gap-1 rounded-md border border-border bg-background/60 px-1.5 py-1.5 font-display text-[9px] font-semibold uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground sm:gap-1.5 sm:rounded-lg sm:px-4 sm:py-2 sm:text-xs"
             >
-              <LogOut className="h-4 w-4 shrink-0" />
+              <LogOut className="h-3.5 w-3.5 shrink-0 sm:h-4 sm:w-4" />
               <span className="whitespace-nowrap">Salir</span>
             </button>
           ) : (
             <Link
               to="/auth"
-              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background/60 px-2.5 py-2 font-display text-[11px] font-semibold uppercase tracking-wider text-foreground transition-colors hover:border-primary/60 hover:text-primary sm:px-4 sm:text-xs"
+              className="inline-flex items-center gap-1 rounded-md border border-border bg-background/60 px-1.5 py-1.5 font-display text-[9px] font-semibold uppercase tracking-wider text-foreground transition-colors hover:border-primary/60 hover:text-primary sm:gap-1.5 sm:rounded-lg sm:px-4 sm:py-2 sm:text-xs"
             >
-              <LogIn className="h-4 w-4 shrink-0" />
+              <LogIn className="h-3.5 w-3.5 shrink-0 sm:h-4 sm:w-4" />
               <span className="whitespace-nowrap">
                 Entrar <span className="hidden sm:inline">/ Registrarse</span>
               </span>
