@@ -3,6 +3,7 @@ import type { ShopOffer } from "@/lib/shop-data";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { WhatsAppLink } from "@/components/whatsapp";
+import { logContact } from "@/lib/contact-log";
 import { AuthGate } from "@/components/auth-gate";
 import { ReportButton } from "@/components/report-dialog";
 
@@ -79,12 +80,13 @@ export function OfferCard({ offer }: { offer: ShopOffer }) {
           <div className="flex flex-wrap items-center gap-2">
           <WhatsAppLink
             phone={offer.whatsapp}
+            target={{ type: "offer", id: offer.id }}
             message={`Hola ${offer.shopName}, os escribo por la oferta publicada en BarberJobs.`}
           />
           {offer.email && (
             <AuthGate>
               <Button asChild size="sm" variant="outline">
-                <a href={`mailto:${offer.email}?subject=${encodeURIComponent("Candidatura BarberJobs")}`}>
+                <a onClick={() => void logContact("offer", offer.id, "email")} href={`mailto:${offer.email}?subject=${encodeURIComponent("Candidatura BarberJobs")}`}>
                   <Mail className="h-4 w-4" /> Email
                 </a>
               </Button>

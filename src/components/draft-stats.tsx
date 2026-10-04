@@ -49,6 +49,7 @@ export function DraftStats() {
     <div className="mx-auto max-w-xl px-4 pt-6">
       <div className="rounded-xl border border-primary/40 bg-card p-4">
         <h2 className="font-display text-lg font-semibold uppercase text-primary">Administrador (solo tú lo ves)</h2>
+        <a href="/admin" className="mt-2 inline-block rounded-md bg-primary px-3 py-1.5 text-sm font-semibold text-primary-foreground">Abrir panel de administración completo →</a>
         <div className="mt-3 grid grid-cols-3 gap-2">
           {general.map((g) => (
             <div key={g.label} className="rounded-lg bg-muted p-2 text-center">
