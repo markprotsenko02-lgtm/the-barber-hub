@@ -8,9 +8,31 @@ const ROUTES: Record<DraftKind, string> = {
 const key = (k: DraftKind) => `bj-draft-${k}`;
 const PENDING = "bj-pending-route";
 
+function deviceId() {
+  let id = localStorage.getItem("bj-device");
+  if (!id) {
+    id = crypto.randomUUID();
+    localStorage.setItem("bj-device", id);
+  }
+  return id;
+}
+
+function track(kind: DraftKind, published: boolean) {
+  try {
+    const flag = `bj-tracked-${kind}${published ? "-pub" : ""}`;
+    if (localStorage.getItem(flag)) return;
+    localStorage.setItem(flag, "1");
+    void supabase.rpc("track_draft", { _device: deviceId(), _kind: kind, _published: published });
+  } catch {
+    /* ignore */
+  }
+}
+
 export function saveDraft(kind: DraftKind, data: unknown, pending: boolean) {
   try {
-    localStorage.setItem(key(kind), JSON.stringify(data));
+    const json = JSON.stringify(data);
+    localStorage.setItem(key(kind), json);
+    if (/":"[^"]+"/.test(json)) track(kind, false);
     if (pending) localStorage.setItem(PENDING, ROUTES[kind]);
     return true;
   } catch {
@@ -44,6 +66,7 @@ export function pendingRoute() {
 }
 
 export function clearDraft(kind: DraftKind) {
+  track(kind, true);
   try {
     localStorage.removeItem(key(kind));
     if (localStorage.getItem(PENDING) === ROUTES[kind]) localStorage.removeItem(PENDING);
