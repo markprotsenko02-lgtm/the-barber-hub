@@ -50,6 +50,13 @@
       "when": 1791138004865,
       "tag": "0006_draft_tracking",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1791138514829,
+      "tag": "0007_admin_stats_and_visits",
+      "breakpoints": true
     }
   ]
 }
