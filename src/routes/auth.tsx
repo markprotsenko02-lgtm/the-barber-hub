@@ -219,9 +219,6 @@ function AuthPage() {
         <button type="button" onClick={() => oauth("google")} className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-foreground px-4 py-3 text-sm font-semibold text-background">
           <span className="font-bold">G</span> Continuar con Google
         </button>
-        <button type="button" onClick={() => oauth("apple")} className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-background px-4 py-3 text-sm font-semibold text-foreground">
-          <span aria-hidden></span> Continuar con Apple
-        </button>
         <p className="text-center text-xs text-muted-foreground">o con tu correo</p>
       </div>
 
