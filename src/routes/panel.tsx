@@ -15,6 +15,7 @@ import {
 } from "@/lib/barber-data";
 import { useBarbers, useMyBarber } from "@/lib/barber-store";
 import { useAuth } from "@/hooks/use-auth";
+import { DraftStats } from "@/components/draft-stats";
 import { PhotoCapture } from "@/components/photo-capture";
 import { NotificationToggle } from "@/components/profile-view-notifier";
 import { Button } from "@/components/ui/button";
@@ -86,6 +87,8 @@ function PanelPage() {
 
   if (!barber) {
     return (
+      <>
+      <DraftStats />
       <div className="mx-auto max-w-xl px-4 py-16 text-center">
         <h1 className="font-display text-3xl font-semibold uppercase">Aún no tienes portfolio</h1>
         <p className="mt-2 text-sm text-muted-foreground">
@@ -95,10 +98,16 @@ function PanelPage() {
           <Link to="/publicar-portfolio">Publicar mi portfolio</Link>
         </Button>
       </div>
+      </>
     );
   }
 
-  return <PanelEditor key={barber.id} barber={barber} />;
+  return (
+    <>
+      <DraftStats />
+      <PanelEditor key={barber.id} barber={barber} />
+    </>
+  );
 }
 
 function PanelEditor({ barber }: { barber: Barber }) {
