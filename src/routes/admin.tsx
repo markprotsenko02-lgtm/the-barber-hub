@@ -256,19 +256,19 @@ function ModItem({ kind, id, name, city, wa, email, photos, extra, notes }: {
       ? { name: f.name, city: f.city, whatsapp: f.wa.replace(/\D/g, ""), email: f.email }
       : { shop_name: f.name, city: f.city, whatsapp: f.wa.replace(/\D/g, ""), email: f.email };
     const { error } = await supabase.from(table).update(patch as never).eq("id", id);
-    if (error) return toast.error("No se pudo guardar");
+    if (error) { toast.error("No se pudo guardar"); return; }
     toast.success("Guardado"); setEdit(false); refresh();
   }
   async function remove() {
     if (!confirm(`¿Borrar "${name}"? No se puede deshacer.`)) return;
     const { error } = await supabase.from(table).delete().eq("id", id);
-    if (error) return toast.error("No se pudo borrar");
+    if (error) { toast.error("No se pudo borrar"); return; }
     toast.success("Borrado"); refresh();
   }
   async function addNote() {
     if (!note.trim()) return;
     const { error } = await supabase.from("admin_notes").insert({ target_type: kind, target_id: id, note: note.trim() });
-    if (error) return toast.error("No se pudo guardar la nota");
+    if (error) { toast.error("No se pudo guardar la nota"); return; }
     setNote(""); refresh();
   }
 
