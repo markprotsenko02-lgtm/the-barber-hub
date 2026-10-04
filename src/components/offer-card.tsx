@@ -35,7 +35,7 @@ export function OfferCard({ offer }: { offer: ShopOffer }) {
               {offer.shopName}
             </h3>
             <p className="flex items-center gap-1 text-xs text-muted-foreground">
-              <MapPin className="h-3 w-3 shrink-0" /> {offer.city}
+              <MapPin className="h-3 w-3 shrink-0" /> {offer.neighborhood ? `${offer.neighborhood}, ${offer.city}` : offer.city}
             </p>
           </div>
         </div>
