@@ -8,6 +8,7 @@ import {
   Scripts,
   type ErrorComponentProps,
 } from "@tanstack/react-router";
+import { supabase } from "@/integrations/supabase/client";
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
@@ -146,6 +147,21 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  useEffect(() => {
+    try {
+      const day = new Date().toISOString().slice(0, 10);
+      if (localStorage.getItem("bj-visit") === day) return;
+      let id = localStorage.getItem("bj-device");
+      if (!id) {
+        id = crypto.randomUUID();
+        localStorage.setItem("bj-device", id);
+      }
+      localStorage.setItem("bj-visit", day);
+      void supabase.rpc("track_visit", { _device: id });
+    } catch {
+      /* ignore */
+    }
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
