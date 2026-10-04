@@ -4,6 +4,7 @@ export type ShopOffer = {
   id: string;
   shopName: string;
   city: string;
+  neighborhood?: string;
   logo: string;
   cover: string;
   lookingFor: string;

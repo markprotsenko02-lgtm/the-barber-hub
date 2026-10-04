@@ -47,6 +47,7 @@ export type Barber = {
   name: string;
   headline: string;
   city: string;
+  neighborhood?: string;
   avatar: string;
   cover: string;
   specialties: Specialty[];

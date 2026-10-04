@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { Tables } from "@/integrations/supabase/types";
 import type { Barber, GalleryItem, Specialty, ContractType, Availability } from "./barber-data";
 import type { ShopOffer } from "./shop-data";
+import { supabase } from "@/integrations/supabase/client";
 import {
   createBarber,
   createOffer,
@@ -18,6 +19,7 @@ export function mapBarber(r: Tables<"barbers">): Barber {
     name: r.name,
     headline: r.headline,
     city: r.city,
+    neighborhood: r.neighborhood ?? "",
     avatar: r.avatar,
     cover: r.cover,
     specialties: r.specialties as Specialty[],
@@ -40,6 +42,7 @@ export function mapOffer(r: Tables<"shop_offers">): ShopOffer {
     id: r.id,
     shopName: r.shop_name,
     city: r.city,
+    neighborhood: r.neighborhood ?? "",
     logo: r.logo,
     cover: r.cover,
     lookingFor: r.looking_for,
@@ -53,6 +56,19 @@ export function mapOffer(r: Tables<"shop_offers">): ShopOffer {
     whatsapp: r.whatsapp,
     ...(r.urgent ? { urgent: true } : {}),
   };
+}
+
+// Contact emails are only readable by signed-in users (not public).
+async function withEmails<T extends { id: string; email: string }>(
+  table: "barbers" | "shop_offers",
+  rows: T[],
+): Promise<T[]> {
+  if (!rows.length) return rows;
+  const { data: s } = await supabase.auth.getSession();
+  if (!s.session) return rows;
+  const { data } = await supabase.from(table).select("id,email");
+  const m = new Map((data ?? []).map((r) => [r.id, r.email]));
+  return rows.map((r) => ({ ...r, email: m.get(r.id) ?? "" }));
 }
 
 export type BarberInput = Omit<Barber, "id">;
@@ -73,11 +89,11 @@ export function useBarbers(): Ctx {
   const qc = useQueryClient();
   const barbersQ = useQuery({
     queryKey: ["barbers"],
-    queryFn: async () => (await listBarbers()).map(mapBarber),
+    queryFn: async () => withEmails("barbers", (await listBarbers()).map(mapBarber)),
   });
   const offersQ = useQuery({
     queryKey: ["offers"],
-    queryFn: async () => (await listOffers()).map(mapOffer),
+    queryFn: async () => withEmails("shop_offers", (await listOffers()).map(mapOffer)),
   });
 
   const invalidate = React.useCallback(
