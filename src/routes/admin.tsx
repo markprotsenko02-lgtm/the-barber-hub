@@ -323,13 +323,14 @@ function HeatMap({ barbers, offers }: { barbers: D["barbers"]; offers: D["offers
   }, [barbers, offers]);
 
   React.useEffect(() => {
+    let cancelled = false;
     let map: import("leaflet").Map | undefined;
     (async () => {
       const L = await import("leaflet");
       await import("leaflet/dist/leaflet.css");
-      if (!ref.current) return;
+      if (cancelled || !ref.current) return;
       map = L.map(ref.current).setView([39.4699, -0.3763], 7);
-      L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", { attribution: "© OpenStreetMap © CARTO" }).addTo(map);
+      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: "© OpenStreetMap", maxZoom: 19 }).addTo(map);
       for (const [city, c] of cities) {
         const p = CITY_COORDS[city];
         if (!p) continue;
@@ -337,7 +338,7 @@ function HeatMap({ barbers, offers }: { barbers: D["barbers"]; offers: D["offers
         if (c.b) L.circleMarker([p.lat - 0.01, p.lng], { radius: 6 + c.b * 3, color: "#e5e5e5", fillOpacity: 0.4 }).bindTooltip(`${city}: ${c.b} barberos`).addTo(map);
       }
     })();
-    return () => { map?.remove(); };
+    return () => { cancelled = true; map?.remove(); };
   }, [cities]);
 
   return (
