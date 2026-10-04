@@ -1,3 +1,4 @@
+import { NeighborhoodField, SalaryFields, parseSalary } from "@/components/extra-fields";
 import * as React from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
@@ -84,6 +85,9 @@ function PublishOffer() {
     lookingFor: "",
     whatsapp: "",
     email: "",
+    neighborhood: "",
+    salaryMin: "",
+    salaryMax: "",
     city: CITIES[0] as string,
     contractType: CONTRACT_TYPES[0] as ContractType,
   });
@@ -104,7 +108,7 @@ function PublishOffer() {
   React.useEffect(() => {
     const d = loadDraft<Draft>("offer");
     if (d) {
-      setForm(d.form);
+      setForm((f) => ({ ...f, ...d.form }));
       setLogo(d.logo);
       setPhotos(d.photos);
       setSpecialties(d.specialties);
@@ -126,13 +130,13 @@ function PublishOffer() {
       await addOffer({
         shopName: d.form.shopName.trim(),
         city: d.form.city,
+        neighborhood: d.form.city === "Valencia" ? (d.form.neighborhood ?? "").trim() : "",
         logo: finalLogo,
         cover: finalPhotos[0] ?? DEFAULT_COVER,
         lookingFor: d.form.lookingFor.trim(),
         specialties: d.specialties,
         contractType: d.form.contractType,
-        salaryMin: 0,
-        salaryMax: 0,
+        ...parseSalary(d.form.salaryMin, d.form.salaryMax),
         conditions: [],
         description: d.form.lookingFor.trim(),
         email: d.form.email.trim(),
@@ -250,6 +254,16 @@ function PublishOffer() {
               </SelectContent>
             </Select>
           </Field>
+          {form.city === "Valencia" && (
+            <Field label="Barrio (opcional)">
+              <NeighborhoodField value={form.neighborhood} onChange={set("neighborhood")} />
+            </Field>
+          )}
+          <div className="sm:col-span-2">
+            <Field label="Salario que ofrecéis (opcional)">
+              <SalaryFields min={form.salaryMin} max={form.salaryMax} onMin={set("salaryMin")} onMax={set("salaryMax")} />
+            </Field>
+          </div>
           <div className="sm:col-span-2">
             <Field label="¿A quién buscáis?" error={errors["lookingFor"]}>
               <Input
