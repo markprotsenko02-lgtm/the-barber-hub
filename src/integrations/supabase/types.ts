@@ -55,6 +55,7 @@ export type Database = {
           id: string
           instagram: string | null
           name: string
+          neighborhood: string
           salary_max: number
           salary_min: number
           specialties: string[]
@@ -77,6 +78,7 @@ export type Database = {
           id?: string
           instagram?: string | null
           name: string
+          neighborhood?: string
           salary_max?: number
           salary_min?: number
           specialties?: string[]
@@ -99,6 +101,7 @@ export type Database = {
           id?: string
           instagram?: string | null
           name?: string
+          neighborhood?: string
           salary_max?: number
           salary_min?: number
           specialties?: string[]
@@ -274,6 +277,7 @@ export type Database = {
           id: string
           logo: string
           looking_for: string
+          neighborhood: string
           salary_max: number
           salary_min: number
           shop_name: string
@@ -293,6 +297,7 @@ export type Database = {
           id?: string
           logo?: string
           looking_for?: string
+          neighborhood?: string
           salary_max?: number
           salary_min?: number
           shop_name: string
@@ -312,6 +317,7 @@ export type Database = {
           id?: string
           logo?: string
           looking_for?: string
+          neighborhood?: string
           salary_max?: number
           salary_min?: number
           shop_name?: string

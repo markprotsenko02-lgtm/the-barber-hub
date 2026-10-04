@@ -64,6 +64,13 @@
       "when": 1791144620641,
       "tag": "0008_admin_dashboard",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1791145635433,
+      "tag": "0009_security_and_neighborhood",
+      "breakpoints": true
     }
   ]
 }

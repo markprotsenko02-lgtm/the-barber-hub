@@ -37,7 +37,7 @@ export function BarberCard({ barber }: { barber: Barber }) {
               {barber.name}
             </h3>
             <p className="flex items-center gap-1 truncate text-xs text-muted-foreground">
-              <MapPin className="h-3 w-3 shrink-0" /> {barber.city}
+              <MapPin className="h-3 w-3 shrink-0" /> {barber.neighborhood ? `${barber.neighborhood}, ${barber.city}` : barber.city}
               {barber.experienceYears > 0 && ` · ${barber.experienceYears} años de experiencia`}
             </p>
           </div>

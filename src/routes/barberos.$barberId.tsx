@@ -117,7 +117,7 @@ function BarberProfile() {
             </h1>
             <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
               <span className="flex items-center gap-1">
-                <MapPin className="h-3.5 w-3.5" /> {barber.city}
+                <MapPin className="h-3.5 w-3.5" /> {barber.neighborhood ? `${barber.neighborhood}, ${barber.city}` : barber.city}
               </span>
               {barber.experienceYears > 0 && <span>{barber.experienceYears} años de experiencia</span>}
               {barber.instagram && (
@@ -245,7 +245,7 @@ function BarberProfile() {
                   </Row>
                 )}
                 <Row icon={<MapPin className="h-4 w-4 text-primary" />} label="Ciudad">
-                  {barber.city}
+                  {barber.neighborhood ? `${barber.neighborhood}, ${barber.city}` : barber.city}
                 </Row>
               </dl>
             </div>

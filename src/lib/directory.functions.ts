@@ -37,6 +37,7 @@ const barberInputSchema = z.object({
   name: z.string().trim().min(2).max(80),
   headline: z.string().trim().max(120),
   city: z.string().trim().max(60),
+  neighborhood: z.string().trim().max(60).optional(),
   avatar: z.string().max(500),
   cover: z.string().max(500),
   specialties: z.array(z.string()).max(10),
@@ -47,7 +48,7 @@ const barberInputSchema = z.object({
   experienceYears: z.number().int().min(0).max(60),
   bio: z.string().max(800),
   education: z.array(educationSchema).max(10),
-  email: z.string().trim().email().max(255),
+  email: z.union([z.literal(""), z.string().trim().email().max(255)]),
   whatsapp: z.string().trim().max(15),
   instagram: z.string().max(60).optional(),
   gallery: z.array(galleryItemSchema).max(30),
@@ -57,6 +58,7 @@ const offerInputSchema = z.object({
   shopName: z.string().trim().min(2).max(80),
   lookingFor: z.string().trim().max(120),
   city: z.string().trim().max(60),
+  neighborhood: z.string().trim().max(60).optional(),
   logo: z.string().max(500),
   cover: z.string().max(500),
   specialties: z.array(z.string()).max(10),
@@ -65,27 +67,30 @@ const offerInputSchema = z.object({
   salaryMax: z.number().int().min(0).max(9000),
   conditions: z.array(z.string().max(120)).max(10),
   description: z.string().max(800),
-  email: z.string().trim().email().max(255),
+  email: z.union([z.literal(""), z.string().trim().email().max(255)]),
   whatsapp: z.string().trim().max(15),
   urgent: z.boolean().optional(),
 });
 
+const BARBER_COLS = "id,user_id,name,headline,city,neighborhood,avatar,cover,specialties,contract_types,availability,salary_min,salary_max,experience_years,bio,education,whatsapp,instagram,gallery,created_at";
+const OFFER_COLS = "id,user_id,shop_name,looking_for,city,neighborhood,logo,cover,specialties,contract_type,salary_min,salary_max,conditions,description,whatsapp,urgent,created_at";
+
 export const listBarbers = createServerFn({ method: "GET" }).handler(async () => {
   const { data, error } = await publicClient()
     .from("barbers")
-    .select("*")
+    .select(BARBER_COLS)
     .order("created_at", { ascending: false });
   if (error) throw new Error(error.message);
-  return data ?? [];
+  return (data ?? []).map((r) => ({ ...r, email: "" }));
 });
 
 export const listOffers = createServerFn({ method: "GET" }).handler(async () => {
   const { data, error } = await publicClient()
     .from("shop_offers")
-    .select("*")
+    .select(OFFER_COLS)
     .order("created_at", { ascending: false });
   if (error) throw new Error(error.message);
-  return data ?? [];
+  return (data ?? []).map((r) => ({ ...r, email: "" }));
 });
 
 export const getMyBarber = createServerFn({ method: "GET" })
@@ -113,6 +118,7 @@ export const createBarber = createServerFn({ method: "POST" })
         name: data.name,
         headline: data.headline,
         city: data.city,
+        neighborhood: data.neighborhood ?? "",
         avatar: data.avatar,
         cover: data.cover,
         specialties: data.specialties,
@@ -145,6 +151,7 @@ export const updateBarber = createServerFn({ method: "POST" })
       ...(p.name !== undefined && { name: p.name }),
       ...(p.headline !== undefined && { headline: p.headline }),
       ...(p.city !== undefined && { city: p.city }),
+      ...(p.neighborhood !== undefined && { neighborhood: p.neighborhood }),
       ...(p.avatar !== undefined && { avatar: p.avatar }),
       ...(p.cover !== undefined && { cover: p.cover }),
       ...(p.specialties !== undefined && { specialties: p.specialties }),
@@ -180,6 +187,7 @@ export const createOffer = createServerFn({ method: "POST" })
         shop_name: data.shopName,
         looking_for: data.lookingFor,
         city: data.city,
+        neighborhood: data.neighborhood ?? "",
         logo: data.logo,
         cover: data.cover,
         specialties: data.specialties,

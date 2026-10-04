@@ -1,3 +1,4 @@
+import { NeighborhoodField, SalaryFields, parseSalary } from "@/components/extra-fields";
 import * as React from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Trash2 } from "lucide-react";
@@ -85,6 +86,9 @@ function PublishPortfolio() {
     city: CITIES[0] as string,
     whatsapp: "",
     email: "",
+    neighborhood: "",
+    salaryMin: "",
+    salaryMax: "",
   });
   const [avatar, setAvatar] = React.useState(AVATARS[0] as string);
   const [specialties, setSpecialties] = React.useState<Specialty[]>([]);
@@ -108,7 +112,7 @@ function PublishPortfolio() {
   React.useEffect(() => {
     const d = loadDraft<Draft>("portfolio");
     if (d) {
-      setForm(d.form);
+      setForm((f) => ({ ...f, ...d.form }));
       setAvatar(d.avatar);
       setSpecialties(d.specialties);
       setContracts(d.contracts);
@@ -135,13 +139,13 @@ function PublishPortfolio() {
         name: d.form.name.trim(),
         headline: d.specialties.slice(0, 3).join(" · "),
         city: d.form.city,
+        neighborhood: d.form.city === "Valencia" ? (d.form.neighborhood ?? "").trim() : "",
         avatar: finalAvatar,
         cover: firstImage?.url ?? DEFAULT_COVER,
         specialties: d.specialties,
         contractTypes: d.contracts,
         availability: AVAILABILITIES[0],
-        salaryMin: 0,
-        salaryMax: 0,
+        ...parseSalary(d.form.salaryMin, d.form.salaryMax),
         experienceYears: 0,
         bio: "",
         education: [],
@@ -242,6 +246,16 @@ function PublishPortfolio() {
               </SelectContent>
             </Select>
           </Field>
+          {form.city === "Valencia" && (
+            <Field label="Barrio (opcional)">
+              <NeighborhoodField value={form.neighborhood} onChange={set("neighborhood")} />
+            </Field>
+          )}
+          <div className="sm:col-span-2">
+            <Field label="Salario que buscas (opcional)">
+              <SalaryFields min={form.salaryMin} max={form.salaryMax} onMin={set("salaryMin")} onMax={set("salaryMax")} />
+            </Field>
+          </div>
           <div className="sm:col-span-2">
             <Field label="Especialidades" error={errors["specialties"]}>
               <Chips
