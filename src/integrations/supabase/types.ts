@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_notes: {
+        Row: {
+          created_at: string
+          id: string
+          note: string
+          target_id: string
+          target_type: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          note: string
+          target_id: string
+          target_type: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          note?: string
+          target_id?: string
+          target_type?: string
+        }
+        Relationships: []
+      }
       barbers: {
         Row: {
           availability: string
@@ -80,6 +104,33 @@ export type Database = {
           specialties?: string[]
           user_id?: string
           whatsapp?: string
+        }
+        Relationships: []
+      }
+      contact_clicks: {
+        Row: {
+          channel: string
+          created_at: string
+          id: string
+          target_id: string
+          target_type: string
+          viewer_id: string
+        }
+        Insert: {
+          channel?: string
+          created_at?: string
+          id?: string
+          target_id: string
+          target_type: string
+          viewer_id?: string
+        }
+        Update: {
+          channel?: string
+          created_at?: string
+          id?: string
+          target_id?: string
+          target_type?: string
+          viewer_id?: string
         }
         Relationships: []
       }
@@ -321,6 +372,18 @@ export type Database = {
           visitors_7d: number
           visitors_today: number
           visitors_total: number
+        }[]
+      }
+      admin_users: {
+        Args: never
+        Returns: {
+          created_at: string
+          email: string
+          first_name: string
+          has_offer: boolean
+          has_portfolio: boolean
+          id: string
+          last_name: string
         }[]
       }
       draft_stats: {
