@@ -24,7 +24,7 @@ export const VALENCIA_BARRIOS = [
 ];
 
 const norm = (s: string) =>
-  s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/gi, "").toLowerCase();
+  s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/gi, "").toLowerCase().replace(/z/g, "s").replace(/x/g, "ch").replace(/(.)\1/g, "$1");
 
 export function matchBarrios(q: string) {
   const n = norm(q);
