@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { ContactForm } from "@/components/contact-form";
 import { WhatsAppIcon } from "@/components/whatsapp";
 import { AuthGate } from "@/components/auth-gate";
+import { logContact } from "@/lib/contact-log";
 import { ReportButton } from "@/components/report-dialog";
 
 export const Route = createFileRoute("/barberos/$barberId")({
@@ -139,7 +140,7 @@ function BarberProfile() {
 
         <AuthGate className="mt-6 flex flex-wrap items-center gap-2">
           <Button asChild className="font-semibold">
-            <a href={waLink} target="_blank" rel="noreferrer noopener">
+            <a onClick={() => void logContact("barber", barber.id, "whatsapp")} href={waLink} target="_blank" rel="noreferrer noopener">
               <MessageCircle className="h-4 w-4" /> Contactar por WhatsApp
             </a>
           </Button>
@@ -158,6 +159,7 @@ function BarberProfile() {
 
         <AuthGate className="mt-4 flex flex-wrap gap-2">
           <a
+            onClick={() => void logContact("barber", barber.id, "whatsapp")}
             href={waLink}
             target="_blank"
             rel="noreferrer noopener"
