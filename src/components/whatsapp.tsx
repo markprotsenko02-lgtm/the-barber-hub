@@ -1,5 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { AuthGate } from "@/components/auth-gate";
+import { logContact } from "@/lib/contact-log";
 
 export function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -33,7 +34,7 @@ export function WhatsAppInput({ value, onChange }: { value: string; onChange: (d
 }
 
 /** Small WhatsApp logo + hidden number; one tap opens the person's WhatsApp (registered users only). */
-export function WhatsAppLink({ phone, message, className }: { phone: string; message: string; className?: string }) {
+export function WhatsAppLink({ phone, message, className, target }: { phone: string; message: string; className?: string; target?: { type: "barber" | "offer"; id: string } }) {
   const prefix = phone.length > 9 ? `+${phone.slice(0, phone.length - 9)}` : "+34";
   return (
     <AuthGate className={className}>
@@ -42,6 +43,7 @@ export function WhatsAppLink({ phone, message, className }: { phone: string; mes
         target="_blank"
         rel="noreferrer noopener"
         aria-label="Abrir WhatsApp"
+        onClick={() => target && void logContact(target.type, target.id, "whatsapp")}
         className="flex items-center gap-2 rounded-md border border-border/70 bg-secondary px-2.5 py-1.5 text-xs font-medium transition-colors hover:border-primary/60"
       >
         <WhatsAppIcon className="h-4 w-4 shrink-0 text-emerald-500" />
