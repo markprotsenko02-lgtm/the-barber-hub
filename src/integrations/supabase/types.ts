@@ -271,6 +271,24 @@ export type Database = {
         }
         Relationships: []
       }
+      site_visits: {
+        Row: {
+          created_at: string
+          day: string
+          device_id: string
+        }
+        Insert: {
+          created_at?: string
+          day?: string
+          device_id: string
+        }
+        Update: {
+          created_at?: string
+          day?: string
+          device_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
@@ -294,6 +312,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_stats: {
+        Args: never
+        Returns: {
+          offers: number
+          portfolios: number
+          users_total: number
+          visitors_7d: number
+          visitors_today: number
+          visitors_total: number
+        }[]
+      }
       draft_stats: {
         Args: never
         Returns: {
@@ -314,6 +343,7 @@ export type Database = {
         Args: { _device: string; _kind: string; _published: boolean }
         Returns: undefined
       }
+      track_visit: { Args: { _device: string }; Returns: undefined }
     }
     Enums: {
       app_role: "admin" | "user"
