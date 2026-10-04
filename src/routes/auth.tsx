@@ -5,6 +5,9 @@ import { LogIn, UserPlus, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { lovable } from "@/integrations/lovable/index";
+import { pendingRoute } from "@/lib/pending-draft";
+
+const afterAuth = () => (pendingRoute() ?? "/") as "/";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -90,7 +93,7 @@ function AuthPage() {
           toast.success("Cuenta creada. Confirma tu correo para entrar.");
         } else {
           toast.success("¡Cuenta creada!");
-          navigate({ to: "/" });
+          navigate({ to: afterAuth() });
         }
       } else {
         const { error } = await supabase.auth.signInWithPassword({
@@ -99,7 +102,7 @@ function AuthPage() {
         });
         if (error) throw error;
         toast.success("Sesión iniciada");
-        navigate({ to: "/" });
+        navigate({ to: afterAuth() });
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : "Algo ha fallado";
@@ -126,7 +129,7 @@ function AuthPage() {
     }
     if (result.redirected) return;
     toast.success("Sesión iniciada");
-    navigate({ to: "/" });
+    navigate({ to: afterAuth() });
   }
 
   if (!loading && user) {
