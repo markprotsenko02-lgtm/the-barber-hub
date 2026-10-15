@@ -1,3 +1,4 @@
+import { useIsAdmin } from "@/hooks/use-is-admin";
 import { NeighborhoodField, SalaryFields, parseSalary } from "@/components/extra-fields";
 import * as React from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
@@ -186,7 +187,7 @@ function PublishPortfolio() {
     }
     if (specialties.length === 0) next["specialties"] = "Elige al menos una especialidad";
     if (contracts.length === 0) next["contracts"] = "Elige al menos un tipo de contrato";
-    if (gallery.length === 0) next["gallery"] = "Añade al menos una foto de tu trabajo";
+    if (gallery.length === 0 && !isAdmin) next["gallery"] = "Añade al menos una foto de tu trabajo";
     setErrors(next);
     if (!parsed.success || Object.keys(next).length > 0) return;
 

@@ -1,3 +1,4 @@
+import { useIsAdmin } from "@/hooks/use-is-admin";
 import { NeighborhoodField, SalaryFields, parseSalary } from "@/components/extra-fields";
 import * as React from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
@@ -174,7 +175,7 @@ function PublishOffer() {
       for (const issue of parsed.error.issues) next[String(issue.path[0])] = issue.message;
     }
     if (specialties.length === 0) next["specialties"] = "Elige al menos una especialidad";
-    if (photos.length === 0) next["photos"] = "Añade al menos una foto de tu barbería";
+    if (photos.length === 0 && !isAdmin) next["photos"] = "Añade al menos una foto de tu barbería";
     setErrors(next);
     if (!parsed.success || Object.keys(next).length > 0) return;
     const draft: Draft = { form, logo, photos, specialties };
