@@ -125,8 +125,7 @@ function Hero({
           Barbería busca <span className="text-gold-gradient">barbero</span>.
         </h1>
         <p className="mt-4 max-w-xl text-sm text-muted-foreground sm:text-base">
-          Dos apartados, cero complicaciones: portfolios de barberos y anuncios de
-          barberías buscando personal.
+          Portfolios de barberos y ofertas de barberías en España. Publicar es gratis.
         </p>
 
         <div className="mt-8 inline-grid w-full max-w-md grid-cols-2 gap-1 rounded-xl border border-border bg-background/60 p-1">
