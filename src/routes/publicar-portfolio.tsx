@@ -80,6 +80,7 @@ const TIPS = [
 function PublishPortfolio() {
   const { addBarber } = useBarbers();
   const { user } = useAuth();
+  const isAdmin = useIsAdmin(user?.id);
   const navigate = useNavigate();
   const [submitting, setSubmitting] = React.useState(false);
   const [form, setForm] = React.useState({
