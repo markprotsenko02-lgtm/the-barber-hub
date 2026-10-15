@@ -34,7 +34,7 @@ export const Route = createFileRoute("/")({
         content:
           "Encuentra barberos por ciudad y especialidad o consulta ofertas de trabajo de barberías en España. Publica tu portfolio o tu vacante gratis.",
       },
-      { property: "og:title", content: "BarberJobs — Donde el talento encuentra curro" },
+      { property: "og:title", content: "BarberJobs — Barbero busca barbería. Barbería busca barbero." },
       {
         property: "og:description",
         content:
