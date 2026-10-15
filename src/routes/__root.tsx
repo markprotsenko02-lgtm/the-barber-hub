@@ -118,6 +118,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "manifest", href: "/manifest.webmanifest" },
     ],
     scripts: [
+      {
+        // Recover from stale/failed module chunks (e.g. after a new publish): reload once.
+        children:
+          "(function(){function r(){try{var k='bj-chunk-reload',t=Date.now(),l=+sessionStorage.getItem(k)||0;if(t-l<10000)return;sessionStorage.setItem(k,String(t));}catch(e){}location.reload();}window.addEventListener('vite:preloadError',function(e){e.preventDefault();r();});function m(x){x=String(x&&(x.message||x)||'');return /Importing a module script failed|Failed to fetch dynamically imported module|error loading dynamically imported module/i.test(x);}window.addEventListener('error',function(e){if(m(e.error||e.message))r();});window.addEventListener('unhandledrejection',function(e){if(m(e.reason))r();});})();",
+      },
       { src: "https://www.googletagmanager.com/gtag/js?id=G-991BH87H1T", async: true },
       {
         children:
