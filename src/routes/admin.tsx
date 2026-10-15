@@ -123,7 +123,11 @@ function Dashboard({ d }: { d: D }) {
     <div className="mx-auto max-w-5xl space-y-6 px-4 py-6">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h1 className="font-display text-2xl font-semibold uppercase text-primary">Administración</h1>
-        <Button size="sm" variant="outline" onClick={() => exportExcel(d, shops)}><Download className="h-4 w-4" /> Exportar Excel</Button>
+        <div className="flex flex-wrap gap-2">
+          <Button size="sm" asChild><Link to="/publicar-oferta">+ Meter oferta</Link></Button>
+          <Button size="sm" asChild><Link to="/publicar-portfolio">+ Meter portfolio</Link></Button>
+          <Button size="sm" variant="outline" onClick={() => exportExcel(d, shops)}><Download className="h-4 w-4" /> Exportar Excel</Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
