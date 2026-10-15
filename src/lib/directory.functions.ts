@@ -23,7 +23,7 @@ function publicClient() {
 const galleryItemSchema = z.object({
   id: z.string(),
   type: z.enum(["image", "video"]),
-  url: z.string().url().max(500),
+  url: z.string().url().max(3000),
   caption: z.string().max(120),
 });
 
@@ -38,8 +38,8 @@ const barberInputSchema = z.object({
   headline: z.string().trim().max(120),
   city: z.string().trim().max(60),
   neighborhood: z.string().trim().max(60).optional(),
-  avatar: z.string().max(500),
-  cover: z.string().max(500),
+  avatar: z.string().max(3000),
+  cover: z.string().max(3000),
   specialties: z.array(z.string()).max(10),
   contractTypes: z.array(z.string()).max(10),
   availability: z.string().max(60),
@@ -59,8 +59,8 @@ const offerInputSchema = z.object({
   lookingFor: z.string().trim().max(120),
   city: z.string().trim().max(60),
   neighborhood: z.string().trim().max(60).optional(),
-  logo: z.string().max(500),
-  cover: z.string().max(500),
+  logo: z.string().max(3000),
+  cover: z.string().max(3000),
   specialties: z.array(z.string()).max(10),
   contractType: z.string().max(60),
   salaryMin: z.number().int().min(0).max(9000),
