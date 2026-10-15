@@ -120,9 +120,9 @@ function Hero({
     <section className="surface-panel border-b border-border/70">
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14">
         <h1 className="max-w-3xl font-display text-4xl font-semibold uppercase leading-tight sm:text-6xl">
-          Donde el <span className="text-gold-gradient">talento</span>
+          Barbero busca <span className="text-gold-gradient">barbería</span>.
           <br />
-          encuentra curro
+          Barbería busca <span className="text-gold-gradient">barbero</span>.
         </h1>
         <p className="mt-4 max-w-xl text-sm text-muted-foreground sm:text-base">
           Dos apartados, cero complicaciones: portfolios de barberos y anuncios de
