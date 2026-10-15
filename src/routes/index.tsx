@@ -34,7 +34,7 @@ export const Route = createFileRoute("/")({
         content:
           "Encuentra barberos por ciudad y especialidad o consulta ofertas de trabajo de barberías en España. Publica tu portfolio o tu vacante gratis.",
       },
-      { property: "og:title", content: "BarberJobs — Talento de barbería en un solo muro" },
+      { property: "og:title", content: "BarberJobs — Donde el talento encuentra curro" },
       {
         property: "og:description",
         content:
@@ -120,8 +120,9 @@ function Hero({
     <section className="surface-panel border-b border-border/70">
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14">
         <h1 className="max-w-3xl font-display text-4xl font-semibold uppercase leading-tight sm:text-6xl">
-          El muro donde el <span className="text-gold-gradient">talento</span> de
-          barbería se ve
+          Donde el <span className="text-gold-gradient">talento</span>
+          <br />
+          encuentra curro
         </h1>
         <p className="mt-4 max-w-xl text-sm text-muted-foreground sm:text-base">
           Dos apartados, cero complicaciones: portfolios de barberos y anuncios de
