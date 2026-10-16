@@ -51,7 +51,7 @@ export const Route = createFileRoute("/publicar-oferta")({
     ],
   }),
   validateSearch: (s: Record<string, unknown>): { editar?: string } =>
-    typeof s.editar === "string" ? { editar: s.editar } : {},
+    typeof s["editar"] === "string" ? { editar: s["editar"] } : {},
   component: PublishOffer,
 });
 
