@@ -1,0 +1,1 @@
+GRANT SELECT (closed) ON public.shop_offers TO anon;
