@@ -1,5 +1,6 @@
 import * as React from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { MyOffers } from "@/components/my-offers";
 import { toast } from "sonner";
 import { ArrowLeft, ImagePlus, Trash2, Eye, Save } from "lucide-react";
 import { z } from "zod";
@@ -89,6 +90,7 @@ function PanelPage() {
     return (
       <>
       <DraftStats />
+      <MyOffers />
       <div className="mx-auto max-w-xl px-4 py-16 text-center">
         <h1 className="font-display text-3xl font-semibold uppercase">Aún no tienes portfolio</h1>
         <p className="mt-2 text-sm text-muted-foreground">
@@ -105,6 +107,7 @@ function PanelPage() {
   return (
     <>
       <DraftStats />
+      <MyOffers />
       <PanelEditor key={barber.id} barber={barber} />
     </>
   );
