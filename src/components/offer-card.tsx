@@ -19,11 +19,9 @@ export function OfferCard({ offer }: { offer: ShopOffer }) {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-card via-card/30 to-transparent" />
         {offer.closed && (
-          <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/60">
-            <span className="-rotate-6 rounded-md border-2 border-destructive px-4 py-1 font-display text-2xl font-bold uppercase tracking-wider text-destructive line-through">
-              Sin oferta
-            </span>
-          </div>
+          <span className="absolute left-3 top-3 z-20 -rotate-3 rounded-md border-2 border-destructive bg-background/85 px-2.5 py-1 font-display text-sm font-bold uppercase tracking-wider text-destructive line-through">
+            Sin oferta
+          </span>
         )}
         {offer.urgent && !offer.closed && (
           <span className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-primary px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-primary-foreground">
@@ -49,7 +47,7 @@ export function OfferCard({ offer }: { offer: ShopOffer }) {
       </div>
 
       <div className="flex flex-1 flex-col gap-3 p-4">
-        <p className={offer.closed ? "font-semibold text-destructive line-through" : "font-semibold"}>{offer.lookingFor}</p>
+        <p className="font-semibold">{offer.lookingFor}</p>
         <p className="line-clamp-3 text-sm text-muted-foreground">{offer.description}</p>
 
         <div className="flex flex-wrap gap-1.5">
