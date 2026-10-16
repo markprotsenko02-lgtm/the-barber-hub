@@ -239,7 +239,7 @@ function PublishOffer() {
         </Link>
       </Button>
       <h1 className="font-display text-3xl font-semibold uppercase">
-        Publicar búsqueda de barbero
+        {editar ? "Editar oferta" : "Publicar búsqueda de barbero"}
       </h1>
       <p className="mt-1 text-sm text-muted-foreground">
         Solo lo esencial y las fotos de tu barbería. Aparece al instante en el muro.
@@ -382,7 +382,7 @@ function PublishOffer() {
         </div>
 
         <Button type="submit" disabled={submitting} className="w-full font-semibold sm:w-auto">
-          {submitting ? "Publicando…" : "Publicar anuncio"}
+          {submitting ? "Guardando…" : editar ? "Guardar cambios" : "Publicar anuncio"}
         </Button>
       </form>
     </div>
