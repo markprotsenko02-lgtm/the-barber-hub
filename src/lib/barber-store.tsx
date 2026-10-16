@@ -55,6 +55,7 @@ export function mapOffer(r: Tables<"shop_offers">): ShopOffer {
     email: r.email,
     whatsapp: r.whatsapp,
     ...(r.urgent ? { urgent: true } : {}),
+    ...(r.closed ? { closed: true } : {}),
   };
 }
 

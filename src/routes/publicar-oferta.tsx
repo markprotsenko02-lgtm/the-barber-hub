@@ -98,6 +98,7 @@ function PublishOffer() {
     salaryMax: "",
     city: CITIES[0] as string,
     contractType: CONTRACT_TYPES[0] as ContractType,
+    closed: false,
   });
   const [logo, setLogo] = React.useState(AVATARS[0] as string);
   const [photos, setPhotos] = React.useState<string[]>([]);
@@ -128,6 +129,7 @@ function PublishOffer() {
         salaryMax: o.salary_max ? String(o.salary_max) : "",
         city: o.city,
         contractType: o.contract_type as ContractType,
+        closed: o.closed,
       });
       setLogo(o.logo);
       setPhotos(o.cover && o.cover !== DEFAULT_COVER ? [o.cover] : []);
@@ -172,6 +174,7 @@ function PublishOffer() {
         description: d.form.lookingFor.trim(),
         email: d.form.email.trim(),
         whatsapp: `34${d.form.whatsapp.replace(/\D/g, "")}`,
+        closed: !!d.form.closed,
       };
       if (editar) {
         await updateOffer({ data: { id: editar, patch: payload } });
@@ -380,6 +383,15 @@ function PublishOffer() {
           <p className="text-xs uppercase tracking-wider text-muted-foreground">Logo o foto de perfil</p>
           <AvatarPicker value={logo} onChange={setLogo} />
         </div>
+
+        <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-destructive/50 bg-card p-4">
+          <input type="checkbox" className="h-5 w-5 accent-[var(--destructive)]" checked={form.closed}
+            onChange={(e) => setForm((f) => ({ ...f, closed: e.target.checked }))} />
+          <span>
+            <span className="font-semibold">Marcar como sin oferta</span>
+            <span className="block text-xs text-muted-foreground">Tu anuncio seguirá visible pero tachado en rojo. Desmárcalo cuando vuelvas a buscar.</span>
+          </span>
+        </label>
 
         <Button type="submit" disabled={submitting} className="w-full font-semibold sm:w-auto">
           {submitting ? "Guardando…" : editar ? "Guardar cambios" : "Publicar anuncio"}

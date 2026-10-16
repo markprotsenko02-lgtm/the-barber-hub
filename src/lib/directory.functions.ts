@@ -70,10 +70,11 @@ const offerInputSchema = z.object({
   email: z.union([z.literal(""), z.string().trim().email().max(255)]),
   whatsapp: z.string().trim().max(15),
   urgent: z.boolean().optional(),
+  closed: z.boolean().optional(),
 });
 
 const BARBER_COLS = "id,user_id,name,headline,city,neighborhood,avatar,cover,specialties,contract_types,availability,salary_min,salary_max,experience_years,bio,education,whatsapp,instagram,gallery,created_at";
-const OFFER_COLS = "id,user_id,shop_name,looking_for,city,neighborhood,logo,cover,specialties,contract_type,salary_min,salary_max,conditions,description,whatsapp,urgent,created_at";
+const OFFER_COLS = "id,user_id,shop_name,looking_for,city,neighborhood,logo,cover,specialties,contract_type,salary_min,salary_max,conditions,description,whatsapp,urgent,closed,created_at";
 
 export const listBarbers = createServerFn({ method: "GET" }).handler(async () => {
   const { data, error } = await publicClient()
@@ -199,6 +200,7 @@ export const createOffer = createServerFn({ method: "POST" })
         email: data.email,
         whatsapp: data.whatsapp,
         urgent: data.urgent ?? false,
+        closed: data.closed ?? false,
       })
       .select()
       .single();
@@ -254,6 +256,7 @@ export const updateOffer = createServerFn({ method: "POST" })
         email: p.email,
         whatsapp: p.whatsapp,
         urgent: p.urgent ?? false,
+        closed: p.closed ?? false,
       })
       .eq("id", data.id)
       .eq("user_id", context.userId);

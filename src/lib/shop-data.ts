@@ -17,4 +17,5 @@ export type ShopOffer = {
   email: string;
   whatsapp: string;
   urgent?: boolean;
+  closed?: boolean;
 };
