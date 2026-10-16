@@ -216,3 +216,47 @@ export const getBarberSeo = createServerFn({ method: "GET" })
       .maybeSingle();
     return row ?? null;
   });
+
+export const getMyOffers = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data, error } = await context.supabase
+      .from("shop_offers")
+      .select("*")
+      .eq("user_id", context.userId)
+      .order("created_at", { ascending: false });
+    if (error) throw new Error(error.message);
+    return data ?? [];
+  });
+
+export const updateOffer = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) =>
+    z.object({ id: z.string().uuid(), patch: offerInputSchema }).parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const p = data.patch;
+    const { error } = await context.supabase
+      .from("shop_offers")
+      .update({
+        shop_name: p.shopName,
+        looking_for: p.lookingFor,
+        city: p.city,
+        neighborhood: p.neighborhood ?? "",
+        logo: p.logo,
+        cover: p.cover,
+        specialties: p.specialties,
+        contract_type: p.contractType,
+        salary_min: p.salaryMin,
+        salary_max: p.salaryMax,
+        conditions: p.conditions,
+        description: p.description,
+        email: p.email,
+        whatsapp: p.whatsapp,
+        urgent: p.urgent ?? false,
+      })
+      .eq("id", data.id)
+      .eq("user_id", context.userId);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });

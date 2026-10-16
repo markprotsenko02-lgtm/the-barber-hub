@@ -13,6 +13,8 @@ import {
   type Specialty,
 } from "@/lib/barber-data";
 import { useBarbers } from "@/lib/barber-store";
+import { useQueryClient } from "@tanstack/react-query";
+import { getMyOffers, updateOffer } from "@/lib/directory.functions";
 import { useAuth } from "@/hooks/use-auth";
 import { clearDraft, ensureUploaded, isPending, loadDraft, saveDraft } from "@/lib/pending-draft";
 import { PhotoCapture } from "@/components/photo-capture";
@@ -48,6 +50,8 @@ export const Route = createFileRoute("/publicar-oferta")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
+  validateSearch: (s: Record<string, unknown>): { editar?: string } =>
+    typeof s.editar === "string" ? { editar: s.editar } : {},
   component: PublishOffer,
 });
 
@@ -81,6 +85,8 @@ function PublishOffer() {
   const { user } = useAuth();
   const isAdmin = useIsAdmin(user?.id);
   const navigate = useNavigate();
+  const { editar } = Route.useSearch();
+  const qc = useQueryClient();
   const [submitting, setSubmitting] = React.useState(false);
   const [form, setForm] = React.useState({
     shopName: "",
@@ -108,6 +114,29 @@ function PublishOffer() {
   const autoRan = React.useRef(false);
 
   React.useEffect(() => {
+    if (!editar || !user) return;
+    void getMyOffers().then((rows) => {
+      const o = rows.find((r) => r.id === editar);
+      if (!o) return;
+      setForm({
+        shopName: o.shop_name,
+        lookingFor: o.looking_for,
+        whatsapp: o.whatsapp.replace(/^34/, ""),
+        email: o.email,
+        neighborhood: o.neighborhood ?? "",
+        salaryMin: o.salary_min ? String(o.salary_min) : "",
+        salaryMax: o.salary_max ? String(o.salary_max) : "",
+        city: o.city,
+        contractType: o.contract_type as ContractType,
+      });
+      setLogo(o.logo);
+      setPhotos(o.cover && o.cover !== DEFAULT_COVER ? [o.cover] : []);
+      setSpecialties(o.specialties as Specialty[]);
+    });
+  }, [editar, user]);
+
+  React.useEffect(() => {
+    if (editar) return;
     const d = loadDraft<Draft>("offer");
     if (d) {
       setForm((f) => ({ ...f, ...d.form }));
@@ -119,7 +148,7 @@ function PublishOffer() {
   }, []);
 
   React.useEffect(() => {
-    if (!restored) return;
+    if (!restored || editar) return;
     saveDraft("offer", { form, logo, photos, specialties }, false);
   }, [restored, form, logo, photos, specialties]);
 
@@ -129,7 +158,7 @@ function PublishOffer() {
       const up = (u: string) => ensureUploaded(userId, u);
       const finalPhotos = await Promise.all(d.photos.map(up));
       const finalLogo = await up(d.logo);
-      await addOffer({
+      const payload = {
         shopName: d.form.shopName.trim(),
         city: d.form.city,
         neighborhood: d.form.city === "Valencia" ? (d.form.neighborhood ?? "").trim() : "",
@@ -143,7 +172,15 @@ function PublishOffer() {
         description: d.form.lookingFor.trim(),
         email: d.form.email.trim(),
         whatsapp: `34${d.form.whatsapp.replace(/\D/g, "")}`,
-      });
+      };
+      if (editar) {
+        await updateOffer({ data: { id: editar, patch: payload } });
+        await qc.invalidateQueries();
+        toast.success("Oferta actualizada");
+        navigate({ to: "/panel" });
+        return;
+      }
+      await addOffer(payload);
       clearDraft("offer");
       toast.success("Anuncio publicado", {
         description: "Ya aparece en el muro de barberías.",
@@ -160,7 +197,7 @@ function PublishOffer() {
   };
 
   React.useEffect(() => {
-    if (!restored || !user || autoRan.current || !isPending("offer")) return;
+    if (editar || !restored || !user || autoRan.current || !isPending("offer")) return;
     const d = loadDraft<Draft>("offer");
     if (!d) return;
     autoRan.current = true;
