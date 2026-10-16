@@ -268,6 +268,7 @@ export type Database = {
       shop_offers: {
         Row: {
           city: string
+          closed: boolean
           conditions: string[]
           contract_type: string
           cover: string
@@ -288,6 +289,7 @@ export type Database = {
         }
         Insert: {
           city?: string
+          closed?: boolean
           conditions?: string[]
           contract_type?: string
           cover?: string
@@ -308,6 +310,7 @@ export type Database = {
         }
         Update: {
           city?: string
+          closed?: boolean
           conditions?: string[]
           contract_type?: string
           cover?: string

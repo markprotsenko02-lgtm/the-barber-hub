@@ -194,7 +194,7 @@ function Dashboard({ d }: { d: D }) {
         <List empty="Sin ofertas.">
           {[...d.offers].reverse().map((o) => (
             <ModItem key={o.id} kind="offer" id={o.id} name={o.shop_name} city={o.city} wa={o.whatsapp} email={o.email}
-              photos={[o.logo, o.cover].filter(Boolean)} extra={`${clicksBy(o.id)} candidatos`} notes={d.notes} />
+              photos={[o.logo, o.cover].filter(Boolean)} extra={`${clicksBy(o.id)} candidatos${o.closed ? " · SIN OFERTA" : ""}`} notes={d.notes} closed={o.closed} />
           ))}
         </List>
       </Section>
@@ -244,8 +244,8 @@ function Contact({ wa, email, msg }: { wa?: string; email?: string; msg?: string
   );
 }
 
-function ModItem({ kind, id, name, city, wa, email, photos, extra, notes }: {
-  kind: "barber" | "offer"; id: string; name: string; city: string; wa: string; email: string; photos: string[]; extra: string; notes: D["notes"];
+function ModItem({ kind, id, name, city, wa, email, photos, extra, notes, closed }: {
+  kind: "barber" | "offer"; id: string; name: string; city: string; wa: string; email: string; photos: string[]; extra: string; notes: D["notes"]; closed?: boolean;
 }) {
   const qc = useQueryClient();
   const [edit, setEdit] = React.useState(false);
@@ -302,6 +302,13 @@ function ModItem({ kind, id, name, city, wa, email, photos, extra, notes }: {
           <><Button size="sm" onClick={save}><Save className="h-4 w-4" /> Guardar</Button><Button size="sm" variant="outline" onClick={() => setEdit(false)}><X className="h-4 w-4" /></Button></>
         ) : (
           <Button size="sm" variant="outline" onClick={() => setEdit(true)}><Pencil className="h-4 w-4" /> Corregir</Button>
+        )}
+        {kind === "offer" && (
+          <Button size="sm" variant={closed ? "default" : "destructive"} onClick={async () => {
+            const { error } = await supabase.from("shop_offers").update({ closed: !closed }).eq("id", id);
+            if (error) { toast.error("No se pudo cambiar"); return; }
+            toast.success(closed ? "Marcada con oferta" : "Marcada sin oferta"); refresh(); void qc.invalidateQueries({ queryKey: ["offers"] });
+          }}>{closed ? "Marcar con oferta" : "Marcar sin oferta"}</Button>
         )}
         <Button size="sm" variant="outline" onClick={remove}><Trash2 className="h-4 w-4" /> Borrar</Button>
       </div>

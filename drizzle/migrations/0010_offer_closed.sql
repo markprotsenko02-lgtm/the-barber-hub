@@ -1,0 +1,1 @@
+ALTER TABLE public.shop_offers ADD COLUMN closed boolean NOT NULL DEFAULT false;
