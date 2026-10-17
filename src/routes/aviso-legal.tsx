@@ -29,8 +29,8 @@ export const Route = createFileRoute("/aviso-legal")({
 
 const TITULAR = {
   nombre: "Mark Protsenko",
-  nif: "NIF: [PENDIENTE — escribe a markprotsenko02@gmail.com y lo añadimos]",
-  domicilio: "Paseo de la Albereda 59, Valencia (España)",
+  nif: "NIE: Y4412673E",
+  domicilio: "Paseo de la Albereda 59, 46023 Valencia (España)",
   email: "markprotsenko02@gmail.com",
 };
 
