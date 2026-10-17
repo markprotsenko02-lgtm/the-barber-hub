@@ -76,7 +76,15 @@ export function SiteFooter() {
           El escaparate donde los barberos muestran su trabajo y las barberías
           fichan talento con criterio.
         </p>
-        <p className="mt-6 text-xs">
+        <nav className="mt-6 flex flex-wrap gap-x-4 gap-y-2 text-xs">
+          <Link
+            to="/aviso-legal"
+            className="underline underline-offset-4 transition-colors hover:text-primary"
+          >
+            Aviso legal
+          </Link>
+        </nav>
+        <p className="mt-3 text-xs">
           © {new Date().getFullYear()} BarberJobs.
         </p>
       </div>
