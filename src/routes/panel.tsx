@@ -1,6 +1,7 @@
 import * as React from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MyOffers } from "@/components/my-offers";
+import { DeleteAccount } from "@/components/delete-account";
 import { toast } from "sonner";
 import { ArrowLeft, ImagePlus, Trash2, Eye, Save } from "lucide-react";
 import { z } from "zod";
@@ -109,6 +110,7 @@ function PanelPage() {
       <DraftStats />
       <MyOffers />
       <PanelEditor key={barber.id} barber={barber} />
+      <DeleteAccount />
     </>
   );
 }

@@ -83,6 +83,12 @@ export function SiteFooter() {
           >
             Aviso legal
           </Link>
+          <Link
+            to="/privacidad"
+            className="underline underline-offset-4 transition-colors hover:text-primary"
+          >
+            Privacidad
+          </Link>
         </nav>
         <p className="mt-3 text-xs">
           © {new Date().getFullYear()} BarberJobs.
