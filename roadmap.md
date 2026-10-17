@@ -9,3 +9,4 @@
 - [x] Panel del barbero (perfil, formación, condiciones, fotos/vídeos)
 - [x] Formulario de publicación de oferta de barbería
 - [x] Metadatos SEO por ruta
+- [ ] Página de aviso legal con enlace en el pie (pendiente: quién figura como titular)
