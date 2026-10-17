@@ -14,6 +14,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AvisoLegalRouteImport } from './routes/aviso-legal'
 import { Route as PanelRouteImport } from './routes/panel'
+import { Route as PrivacidadRouteImport } from './routes/privacidad'
 import { Route as PublicarOfertaRouteImport } from './routes/publicar-oferta'
 import { Route as PublicarPortfolioRouteImport } from './routes/publicar-portfolio'
 import { Route as BarberosBarberIdRouteImport } from './routes/barberos.$barberId'
@@ -43,6 +44,11 @@ const PanelRoute = PanelRouteImport.update({
   path: '/panel',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacidadRoute = PrivacidadRouteImport.update({
+  id: '/privacidad',
+  path: '/privacidad',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PublicarOfertaRoute = PublicarOfertaRouteImport.update({
   id: '/publicar-oferta',
   path: '/publicar-oferta',
@@ -65,6 +71,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/aviso-legal': typeof AvisoLegalRoute
   '/panel': typeof PanelRoute
+  '/privacidad': typeof PrivacidadRoute
   '/publicar-oferta': typeof PublicarOfertaRoute
   '/publicar-portfolio': typeof PublicarPortfolioRoute
   '/barberos/$barberId': typeof BarberosBarberIdRoute
@@ -75,6 +82,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/aviso-legal': typeof AvisoLegalRoute
   '/panel': typeof PanelRoute
+  '/privacidad': typeof PrivacidadRoute
   '/publicar-oferta': typeof PublicarOfertaRoute
   '/publicar-portfolio': typeof PublicarPortfolioRoute
   '/barberos/$barberId': typeof BarberosBarberIdRoute
@@ -86,6 +94,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/aviso-legal': typeof AvisoLegalRoute
   '/panel': typeof PanelRoute
+  '/privacidad': typeof PrivacidadRoute
   '/publicar-oferta': typeof PublicarOfertaRoute
   '/publicar-portfolio': typeof PublicarPortfolioRoute
   '/barberos/$barberId': typeof BarberosBarberIdRoute
@@ -98,6 +107,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/aviso-legal'
     | '/panel'
+    | '/privacidad'
     | '/publicar-oferta'
     | '/publicar-portfolio'
     | '/barberos/$barberId'
@@ -108,6 +118,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/aviso-legal'
     | '/panel'
+    | '/privacidad'
     | '/publicar-oferta'
     | '/publicar-portfolio'
     | '/barberos/$barberId'
@@ -118,6 +129,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/aviso-legal'
     | '/panel'
+    | '/privacidad'
     | '/publicar-oferta'
     | '/publicar-portfolio'
     | '/barberos/$barberId'
@@ -129,6 +141,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   AvisoLegalRoute: typeof AvisoLegalRoute
   PanelRoute: typeof PanelRoute
+  PrivacidadRoute: typeof PrivacidadRoute
   PublicarOfertaRoute: typeof PublicarOfertaRoute
   PublicarPortfolioRoute: typeof PublicarPortfolioRoute
   BarberosBarberIdRoute: typeof BarberosBarberIdRoute
@@ -171,6 +184,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PanelRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacidad': {
+      id: '/privacidad'
+      path: '/privacidad'
+      fullPath: '/privacidad'
+      preLoaderRoute: typeof PrivacidadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/publicar-oferta': {
       id: '/publicar-oferta'
       path: '/publicar-oferta'
@@ -201,6 +221,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   AvisoLegalRoute: AvisoLegalRoute,
   PanelRoute: PanelRoute,
+  PrivacidadRoute: PrivacidadRoute,
   PublicarOfertaRoute: PublicarOfertaRoute,
   PublicarPortfolioRoute: PublicarPortfolioRoute,
   BarberosBarberIdRoute: BarberosBarberIdRoute,
