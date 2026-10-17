@@ -10,4 +10,4 @@
 - [x] Formulario de publicación de oferta de barbería
 - [x] Metadatos SEO por ruta
 - [x] Página de aviso legal con enlace en el pie
-- [ ] Completar el NIF del titular en el aviso legal (pendiente de que Mark lo pase)
+- [x] Completar el NIF del titular en el aviso legal (NIE Y4412673E, CP 46023)
