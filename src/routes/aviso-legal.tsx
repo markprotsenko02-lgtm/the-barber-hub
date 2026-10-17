@@ -30,7 +30,7 @@ export const Route = createFileRoute("/aviso-legal")({
 const TITULAR = {
   nombre: "Mark Protsenko",
   nif: "NIE: Y4412673E",
-  domicilio: "Calle Luis Berlanga Martí 11, Valencia (España)",
+  domicilio: "Calle Luis Berlanga Martí 11, 46023 Valencia (España)",
   email: "markprotsenko02@gmail.com",
 };
 
