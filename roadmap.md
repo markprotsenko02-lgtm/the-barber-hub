@@ -10,4 +10,5 @@
 - [x] Formulario de publicación de oferta de barbería
 - [x] Metadatos SEO por ruta
 - [x] Página de aviso legal con enlace en el pie
-- [x] Completar el NIF del titular en el aviso legal (NIE Y4412673E, CP 46023)
+- [x] Aviso legal con NIE Y4412673E y dirección Calle Luis Berlanga Martí 11
+- [ ] Confirmar el código postal de Calle Luis Berlanga Martí 11
