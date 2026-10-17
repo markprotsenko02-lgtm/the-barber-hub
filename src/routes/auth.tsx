@@ -221,6 +221,11 @@ function AuthPage() {
         <button type="button" onClick={() => oauth("google")} className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-foreground px-4 py-3 text-sm font-semibold text-background">
           <span className="font-bold">G</span> Continuar con Google
         </button>
+        <p className="text-center text-[11px] text-muted-foreground">
+          Al continuar con Google aceptas el{" "}
+          <Link to="/aviso-legal" className="underline">aviso legal</Link> y la{" "}
+          <Link to="/privacidad" className="underline">política de privacidad</Link>.
+        </p>
         <p className="text-center text-xs text-muted-foreground">o con tu correo</p>
       </div>
 
