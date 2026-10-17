@@ -101,6 +101,7 @@ function PanelPage() {
           <Link to="/publicar-portfolio">Publicar mi portfolio</Link>
         </Button>
       </div>
+      <DeleteAccount />
       </>
     );
   }

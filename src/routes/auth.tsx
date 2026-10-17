@@ -42,6 +42,7 @@ function AuthPage() {
   const [busy, setBusy] = React.useState(false);
   const [sent, setSent] = React.useState(false);
 
+  const [accepted, setAccepted] = React.useState(false);
   const [form, setForm] = React.useState({
     firstName: "",
     lastName: "",
@@ -61,6 +62,7 @@ function AuthPage() {
       if (form.lastName.trim().length < 2) next["lastName"] = "Escribe tus apellidos";
       if (form.password.length < 6) next["password"] = "Mínimo 6 caracteres";
       if (form.confirm !== form.password) next["confirm"] = "Las contraseñas no coinciden";
+      if (!accepted) next["accept"] = "Tienes que aceptar para crear la cuenta";
     } else if (form.password.length < 6) {
       next["password"] = "Mínimo 6 caracteres";
     }
@@ -310,6 +312,33 @@ function AuthPage() {
             />
             {errors["confirm"] && (
               <p className="mt-1 text-xs text-destructive">{errors["confirm"]}</p>
+            )}
+          </div>
+        )}
+
+        {mode === "signup" && (
+          <div>
+            <label className="flex items-start gap-2 text-xs text-muted-foreground">
+              <input
+                type="checkbox"
+                className="mt-0.5 h-4 w-4 accent-primary"
+                checked={accepted}
+                onChange={(e) => setAccepted(e.target.checked)}
+              />
+              <span>
+                He leído y acepto el{" "}
+                <Link to="/aviso-legal" target="_blank" className="text-primary underline">
+                  aviso legal
+                </Link>{" "}
+                y la{" "}
+                <Link to="/privacidad" target="_blank" className="text-primary underline">
+                  política de privacidad
+                </Link>
+                .
+              </span>
+            </label>
+            {errors["accept"] && (
+              <p className="mt-1 text-xs text-destructive">{errors["accept"]}</p>
             )}
           </div>
         )}
