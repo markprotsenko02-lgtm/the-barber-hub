@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AvisoLegalRouteImport } from './routes/aviso-legal'
 import { Route as PanelRouteImport } from './routes/panel'
 import { Route as PublicarOfertaRouteImport } from './routes/publicar-oferta'
 import { Route as PublicarPortfolioRouteImport } from './routes/publicar-portfolio'
@@ -30,6 +31,11 @@ const AdminRoute = AdminRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AvisoLegalRoute = AvisoLegalRouteImport.update({
+  id: '/aviso-legal',
+  path: '/aviso-legal',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PanelRoute = PanelRouteImport.update({
@@ -57,6 +63,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
+  '/aviso-legal': typeof AvisoLegalRoute
   '/panel': typeof PanelRoute
   '/publicar-oferta': typeof PublicarOfertaRoute
   '/publicar-portfolio': typeof PublicarPortfolioRoute
@@ -66,6 +73,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
+  '/aviso-legal': typeof AvisoLegalRoute
   '/panel': typeof PanelRoute
   '/publicar-oferta': typeof PublicarOfertaRoute
   '/publicar-portfolio': typeof PublicarPortfolioRoute
@@ -76,6 +84,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
+  '/aviso-legal': typeof AvisoLegalRoute
   '/panel': typeof PanelRoute
   '/publicar-oferta': typeof PublicarOfertaRoute
   '/publicar-portfolio': typeof PublicarPortfolioRoute
@@ -87,6 +96,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/auth'
+    | '/aviso-legal'
     | '/panel'
     | '/publicar-oferta'
     | '/publicar-portfolio'
@@ -96,6 +106,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/auth'
+    | '/aviso-legal'
     | '/panel'
     | '/publicar-oferta'
     | '/publicar-portfolio'
@@ -105,6 +116,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/auth'
+    | '/aviso-legal'
     | '/panel'
     | '/publicar-oferta'
     | '/publicar-portfolio'
@@ -115,6 +127,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   AuthRoute: typeof AuthRoute
+  AvisoLegalRoute: typeof AvisoLegalRoute
   PanelRoute: typeof PanelRoute
   PublicarOfertaRoute: typeof PublicarOfertaRoute
   PublicarPortfolioRoute: typeof PublicarPortfolioRoute
@@ -142,6 +155,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/aviso-legal': {
+      id: '/aviso-legal'
+      path: '/aviso-legal'
+      fullPath: '/aviso-legal'
+      preLoaderRoute: typeof AvisoLegalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/panel': {
@@ -179,6 +199,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   AuthRoute: AuthRoute,
+  AvisoLegalRoute: AvisoLegalRoute,
   PanelRoute: PanelRoute,
   PublicarOfertaRoute: PublicarOfertaRoute,
   PublicarPortfolioRoute: PublicarPortfolioRoute,
